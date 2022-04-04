@@ -30,9 +30,10 @@ Arduino, but does not require it.
 
 ## Installation
 
-1. Visit the [Releases
-page](https://github.com/osteele/Processing_SerialRecord/releases).
-2. Download the Latest Library (zip), at the top of the page.
+1. Visit this repository's [Releases
+   page](https://github.com/osteele/Processing_SerialRecord/releases).
+2. Near the latest release at top of the page, under Assets, download the
+   `SerialRecord-…-processing-library.zip` file.
 3. Unzip the downloaded archive file, into a folder SerialRecord.
 4. Move the SerialRecord folder into the folder Process/Libraries, in your home
    directory.
