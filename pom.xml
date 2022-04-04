@@ -82,6 +82,7 @@
           <version>2.9.1</version>
           <configuration>
             <reportOutputDirectory>target/reference</reportOutputDirectory>
+            <source>11</source>
           </configuration>
         </plugin>
         <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->

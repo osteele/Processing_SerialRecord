@@ -7,19 +7,22 @@ import java.util.List;
 import processing.core.*;
 import processing.serial.*;
 
+/** Utility functions that make it easier to use the serial port. */
 public class SerialUtils {
   /**
-   * Return the first port name that matches "/dev/cu.usbmodem*" or
-   * "/dev/tty.usbmodem*".
-   * "/dev/cu.…" is preferred.
+   * Find the serial port that, based on its name, is probably connected to an
+   * Arduino.
+   *
+   * Returns the first port name that matches "/dev/cu.usbmodem*" or
+   * "/dev/tty.usbmodem*". "/dev/cu.…" is preferred.
    *
    * If there are multiple ports that match "/dev/cu.…", or no ports that match
-   * "/dev/cu.…"
-   * but multiple ports that match "/dev/tty.…", a message is printed to the
-   * console, and the
-   * name of the first matching port is returned.
+   * "/dev/cu.…" but multiple ports that match "/dev/tty.…", a message is
+   * printed to the console, and the name of the first matching port is
+   * returned.
    *
-   * If there is no matching port, return null.
+   * @return the name of the serial port that is probably connected to an
+   *         Arduino. If there is no matching port, return null.
    */
   public static String findArduinoPort() {
     List<String> ports = Arrays.asList(Serial.list());
