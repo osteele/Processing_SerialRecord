@@ -1,3 +1,15 @@
+/* Example sketch for the SerialRecord library for Processing.
+ *
+ * Maps the horizontal and vertical position of the mouse on the canvas to
+ * the range 0…1023, and sends them to the serial port.
+ *
+ * Click the canvas to request the Arduino to send back the last record that
+ * it received.
+ *
+ * Uncomment the line that contains `periodicEchoRequest` to do this
+ * automatically.
+ */
+
 import processing.serial.*;
 import osteele.processing.SerialRecord.*;
 
@@ -16,6 +28,7 @@ void setup() {
   }
   println("Connect to " + serialPortName);
   serialPort = new Serial(this, serialPortName, 9600);
+  // change the number on the next line to send different numbers of values
   serialRecord = new SerialRecord(this, serialPort, 2);
 }
 

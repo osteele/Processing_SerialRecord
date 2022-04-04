@@ -1,3 +1,9 @@
+/* Example sketch for the SerialRecord library for Processing.
+ *
+ * Receives an integers from the serial port, and use it to control
+ * the horizontal positon of a line on the canvas.
+ */
+
 import processing.serial.*;
 import osteele.processing.SerialRecord.*;
 
@@ -24,8 +30,8 @@ void draw() {
 
   serialRecord.read();
   int value = serialRecord.get();
-  
-  int x = value / 100 % width;
+
+  float x = value / 100 % width;
   line(x, 0, x, height);
 
   serialRecord.draw();

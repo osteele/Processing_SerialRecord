@@ -1,7 +1,7 @@
 /* Example sketch for the SerialRecord library for Processing.
  *
- * Send a zero or 1 the serial port, depending on whether the mouse is on the
- * left or right half of the canvas.
+ * Receives two integers from the serial port, and uses them to control
+ * the x and y position of a circle on the canvas.
  */
 
 import processing.serial.*;
@@ -22,23 +22,20 @@ void setup() {
   }
   println("Connect to " + serialPortName);
   serialPort = new Serial(this, serialPortName, 9600);
-  serialRecord = new SerialRecord(this, serialPort, 1);
+  // change the number on the next line to receive different numbers of values
+  serialRecord = new SerialRecord(this, serialPort, 2);
 }
 
 void draw() {
   background(0);
 
-  // display instructions
-  pushStyle();
-  textAlign(CENTER, CENTER);
-  textSize(20);
-  text("Hold the mouse button to send a 1 to the Arduino", 0, 0, width, height);
-  popStyle();
+  serialRecord.read();
+  int value1 = serialRecord.values[0];
+  int value2 = serialRecord.values[1];
 
-  if (mouseButton == LEFT) {
-    serialRecord.values[0] = 1;
-  } else {
-    serialRecord.values[0] = 0;
-  }
-  serialRecord.send();
+  float x = value1 / 100 % width;
+  float y = map(value2, 0, 1024, 0, height);
+  circle(x, y, 20);
+
+  serialRecord.draw();
 }

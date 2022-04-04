@@ -149,17 +149,25 @@ public class SerialRecord {
     if (line.isBlank()) {
       return;
     }
+    if (!Character.isDigit(line.charAt(0))) {
+      // This could be a warning or error message.
+      if (line.startsWith("Warning:") || line.startsWith("Error:")) {
+        PGraphics.showWarning(line);
+      }
+      return;
+    }
     var values = line.split(",");
     if (values.length != size) {
-      var message = String.format("Expected %d values, but received %d values", size, values.length);
+      var message = String.format("Expected %d value(s), but received %d value(s)",
+          size, values.length);
       PGraphics.showWarning(message);
     }
-    int n = Math.max(values.length, size);
+    int n = Math.min(values.length, size);
     for (int i = 0; i < n; i++) {
       try {
         this.values[i] = Integer.parseInt(values[i]);
       } catch (NumberFormatException e) {
-        PGraphics.showWarning("Received line has invalid value: " + values[i]);
+        PGraphics.showWarning("Received line contains an invalid value: " + values[i]);
         break;
       }
     }
