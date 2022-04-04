@@ -21,12 +21,18 @@ public class SerialRecord {
   public SerialRecord(PApplet app, Serial port, int size) {
     this.app = app;
     this.serialPort = port;
+    this.size = size;
     this.values = new int[size];
+  }
+
+  public int get() {
+    return values[0];
   }
 
   /** Send the values in the urrent record to the serial port. */
   public void send() {
     var record = Utils.stringInterpolate(values, ",");
+    pTxLine = record;
     if (log) {
       PApplet.println("TX: " + record);
     }
@@ -39,21 +45,28 @@ public class SerialRecord {
    * the serial port and store the values in the current record.
    */
   public void receiveIfAvailable() {
-    if (serialPort.available() == 0) {
-      return;
-    }
-    var line = serialPort.readStringUntil('\n');
-    if (line != null) {
-      pRxTime = this.app.millis();
-      if (line.endsWith("\n")) {
-        line = line.substring(0, line.length() - 1);
+    while (serialPort.available() > 0) {
+      var line = serialPort.readStringUntil('\n');
+      if (line != null) {
+        pRxTime = this.app.millis();
+        while (!line.isEmpty()
+            && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
+          line = line.substring(0, line.length() - 1);
+        }
+        if (log) {
+          PApplet.println("Rx: " + line);
+        }
+        pRxLine = line;
+        if (!firstLine) {
+          processReceivedLine(line);
+        }
+        firstLine = false;
       }
-      if (log) {
-        PApplet.println("Rx: " + line);
-      }
-      pRxLine = line;
-      processReceivedLine(line);
     }
+  }
+
+  public void read() {
+    receiveIfAvailable();
   }
 
   /**
@@ -63,7 +76,10 @@ public class SerialRecord {
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
-    this.app.text("TX: " + Utils.stringInterpolate(values, ","), x, y);
+    receiveIfAvailable();
+    if (pTxLine != null) {
+      this.app.text("TX: " + pTxLine, x, y);
+    }
     if (pRxLine == null || !pRxLine.isEmpty()) {
       y += this.app.textAscent() + this.app.textDescent();
       var message = "Click to request an echo from the Arduino";
@@ -98,6 +114,7 @@ public class SerialRecord {
       pPeriodicEchoRequestTime = this.app.millis();
       this.requestEcho();
     }
+    receiveIfAvailable();
   }
 
   /**
@@ -109,9 +126,10 @@ public class SerialRecord {
   }
 
   private PApplet app;
-  private String pRxLine;
+  private String pRxLine, pTxLine;
   private int pRxTime;
   private int pPeriodicEchoRequestTime = 0;
+  private boolean firstLine = true;
 
   private String humanTime(int age) {
     if (age < 1000) {
@@ -128,5 +146,22 @@ public class SerialRecord {
   }
 
   private void processReceivedLine(String line) {
+    if (line.isBlank()) {
+      return;
+    }
+    var values = line.split(",");
+    if (values.length != size) {
+      var message = String.format("Expected %d values, but received %d values", size, values.length);
+      PGraphics.showWarning(message);
+    }
+    int n = Math.max(values.length, size);
+    for (int i = 0; i < n; i++) {
+      try {
+        this.values[i] = Integer.parseInt(values[i]);
+      } catch (NumberFormatException e) {
+        PGraphics.showWarning("Received line has invalid value: " + values[i]);
+        break;
+      }
+    }
   }
 }
