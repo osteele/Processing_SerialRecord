@@ -44,6 +44,8 @@ public class SerialUtils {
       }
       return selected.get(0);
     }
+    PApplet.println("No Arduino port found. Available serial ports:");
+    PApplet.printArray(Serial.list());
     return null;
   }
 }

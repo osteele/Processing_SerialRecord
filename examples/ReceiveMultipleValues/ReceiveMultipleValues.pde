@@ -15,12 +15,9 @@ void setup() {
 
   String serialPortName = SerialUtils.findArduinoPort();
   if (serialPortName == null) {
-    println("No Arduino port found. Available serial ports:");
-    printArray(Serial.list());
     exit();
     return;
   }
-  println("Connect to " + serialPortName);
   serialPort = new Serial(this, serialPortName, 9600);
   // change the number on the next line to receive different numbers of values
   serialRecord = new SerialRecord(this, serialPort, 2);

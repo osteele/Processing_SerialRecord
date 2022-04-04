@@ -4,7 +4,12 @@ Library to send and read single or multiple values to and from the serial port.
 
 The library transmits the values in ASCII. Each record is a sequence of ASCII
 representations of numbers, separated by a comma and terminated by a newline.
-This is the format used by the Arduino IDE Serial Plotter tool.
+
+This library can be used in conjunction with the [Arduino
+SerialRecord](https://github.com/osteele/Arduino_SerialRecord) library on
+Arduino, but does not require it.
+
+![](docs/screenshot.png "Screenshot")
 
 ## Design Goals
 
@@ -14,12 +19,15 @@ This is the format used by the Arduino IDE Serial Plotter tool.
 
 ### Non-goals
 
-- Efficiency. This use ASCII, which is easy to inspect but computationally expensive to
-  read and write, and requires more bandwidth than a binary representation.
-- Flexibility. All records must have the same number of values. This makes it
-  possible to detect errors in code that uses the library, but is not
-  appropriate to all communications. If you need more flexibility, this is not
-  the library for you. (See the Alternatives section below.)
+- Efficiency. The library uses an ASCII representation of numbers. This is easy
+  to visually inspect without tools, but it is computationally expensive to read
+  and write, and requires more bandwidth than a binary representation.
+- Flexibility. All records must have the same number of values; only integers
+  are supported. This makes it possible to detect errors in code that uses the
+  library, but is not appropriate to all communications. If you need more
+  flexibility, this is not the library for you. (Consider the Data and I/O
+  libraries in the list of [Processing Contributed
+  Libraries](https://processing.org/reference/libraries/)).)
 
 ## Installation
 
@@ -27,6 +35,10 @@ This is the format used by the Arduino IDE Serial Plotter tool.
    the top of this page, and press "Download ZIP".
 2. Unzip the archive.
 3. Move the archive into the folder Process/Libraries, in your home directory.
+
+The next time you start Processing, you will find examples in the File >
+Examples menu item. Remember to make a copy of an example before you modify it;
+Processing (unlike the Arduino IDE) will not do this for you.
 
 ## Features
 
