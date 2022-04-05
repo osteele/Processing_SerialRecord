@@ -31,18 +31,29 @@ for the Arduino, but does not require it.
 
 ## Installation
 
+**Note**: This library requires [Processing 4](https://processing.org/download).
+It does not support the Stable release, Processsing 3.5.4.
+
 1. Download <https://assets.osteele.com.s3.amazonaws.com/processing/SerialRecord.zip>.
 2. Uncompress the downloaded archive file, to create a folder "SerialRecord".
 3. Move the SerialRecord folder into the folder Process/Libraries in your home directory.
 
-The next time you start Processing, you will find examples in the File >
-Examples menu item. Remember to make a copy of an example before you modify it:
-Processing (unlike the Arduino IDE) will not do this for you.
+The next time you start the Processing IDE, you will find examples from the "File > Examples" menu. Remember to make a
+copy of an example before you modify it: Processing (unlike the Arduino IDE) will not do this for you.
 
 ## Examples
 
-Once you install the library, these examples are available in the File > Examples. You can also review them
-[here](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
+Once you install the library, these examples are available from the "File >
+Examples" menu.
+
+Each of them is designed to pair with an example in the [Arduino SerialRecord]
+library, but they can also be used with other sketches, or as a starting point
+for your own work.
+
+![](docs/examples-browser.png)
+
+You can also review them
+[on GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
 
 ## Features
 

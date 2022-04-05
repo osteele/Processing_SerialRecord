@@ -1,5 +1,6 @@
 package osteele.processing.SerialRecord;
 
+import java.util.*;
 import processing.core.*;
 import processing.serial.*;
 
@@ -15,11 +16,10 @@ public class SerialRecord {
   public int values[];
   /** The serial port. */
   public Serial serialPort;
-  /** Set to true to print transmited and received lines to the console. */
-  public boolean log = false;
 
   public SerialRecord(PApplet app, Serial port, int size) {
     this.app = app;
+    this.portConnection = PortConnection.get(app, port);
     this.serialPort = port;
     this.size = size;
     this.values = new int[size];
@@ -29,11 +29,21 @@ public class SerialRecord {
     return values[0];
   }
 
+  /** Set to true to print transmited and received lines to the console. */
+  public void log(boolean flag) {
+    mLog = flag;
+  }
+
+  /** Call to print transmited and received lines to the console. */
+  public void log() {
+    log(true);
+  }
+
   /** Send the values in the urrent record to the serial port. */
   public void send() {
     var record = Utils.stringInterpolate(values, ",");
     pTxLine = record;
-    if (log) {
+    if (mLog) {
       PApplet.println("TX: " + record);
     }
     serialPort.write(record);
@@ -45,23 +55,9 @@ public class SerialRecord {
    * the serial port and store the values in the current record.
    */
   public void receiveIfAvailable() {
-    while (serialPort.available() > 0) {
-      var line = serialPort.readStringUntil('\n');
-      if (line != null) {
-        pRxTime = this.app.millis();
-        while (!line.isEmpty()
-            && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
-          line = line.substring(0, line.length() - 1);
-        }
-        if (log) {
-          PApplet.println("Rx: " + line);
-        }
-        pRxLine = line;
-        if (!firstLine) {
-          processReceivedLine(line);
-        }
-        firstLine = false;
-      }
+    var line = portConnection.read(mLog);
+    if (line != null) {
+      processReceivedLine(line);
     }
   }
 
@@ -76,7 +72,7 @@ public class SerialRecord {
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
-    receiveIfAvailable();
+    var pRxLine = portConnection.read(mLog);
     if (pTxLine != null) {
       this.app.text("TX: " + pTxLine, x, y);
     }
@@ -85,7 +81,7 @@ public class SerialRecord {
       var message = "Click to request an echo from the Arduino";
       if (pRxLine != null) {
         message = pRxLine;
-        int age = this.app.millis() - pRxTime;
+        int age = this.app.millis() - portConnection.pRxTime;
         if (age >= 1000) {
           message += String.format(" (%s ago)", humanTime(age));
         }
@@ -114,7 +110,7 @@ public class SerialRecord {
       pPeriodicEchoRequestTime = this.app.millis();
       this.requestEcho();
     }
-    receiveIfAvailable();
+    portConnection.read(mLog);
   }
 
   /**
@@ -126,10 +122,10 @@ public class SerialRecord {
   }
 
   private PApplet app;
-  private String pRxLine, pTxLine;
-  private int pRxTime;
+  private String pTxLine;
+  private PortConnection portConnection;
   private int pPeriodicEchoRequestTime = 0;
-  private boolean firstLine = true;
+  private boolean mLog = true;
 
   private String humanTime(int age) {
     if (age < 1000) {
@@ -150,26 +146,99 @@ public class SerialRecord {
       return;
     }
     if (!Character.isDigit(line.charAt(0))) {
-      // This could be a warning or error message.
-      if (line.startsWith("Warning:") || line.startsWith("Error:")) {
-        PGraphics.showWarning(line);
-      }
-      return;
+    // This could be a warning or error message.
+    if (line.startsWith("Warning:") || line.startsWith("Error:")) {
+    PGraphics.showWarning(line);
+    }
+    return;
     }
     var values = line.split(",");
     if (values.length != size) {
-      var message = String.format("Expected %d value(s), but received %d value(s)",
-          size, values.length);
-      PGraphics.showWarning(message);
+    var message = String.format("Expected %d value(s), but received %d value(s)",
+    size, values.length);
+    PGraphics.showWarning(message);
     }
     int n = Math.min(values.length, size);
     for (int i = 0; i < n; i++) {
-      try {
-        this.values[i] = Integer.parseInt(values[i]);
-      } catch (NumberFormatException e) {
-        PGraphics.showWarning("Received line contains an invalid value: " + values[i]);
-        break;
+    try {
+    this.values[i] = Integer.parseInt(values[i]);
+    } catch (NumberFormatException e) {
+    PGraphics.showWarning("Received line contains an invalid value: " +
+    values[i]);
+    break;
+    }
+    }
+    }
+  }
+
+/**
+ * Mediates the connection between multiple SerialRecords connected to the same
+ * port, so that the last received line of text can be tracked on a per-port
+ * instead of per-SerialRecord basis.
+ */
+class PortConnection {
+  private static Map<Serial, PortConnection> map = new HashMap<Serial, PortConnection>();
+
+  /**
+   * Get the instance for the specified port. Create a new instance if none
+   * exists.
+   */
+  static PortConnection get(PApplet app, Serial serial) {
+    var connection = map.get(serial);
+    if (connection == null) {
+      connection = new PortConnection(app, serial);
+      map.put(serial, connection);
+    }
+    return connection;
+  }
+
+  Serial serial;
+  String pRxLine;
+  int pRxTime;
+  private PApplet app;
+  private String unprocessedRxLine;
+  private boolean firstLine = true;
+
+  public PortConnection(PApplet app, Serial serial) {
+    this.app = app;
+    this.serial = serial;
+  }
+
+  /**
+   * If data is available on the serial port, synchronously read a line from
+   * the serial port and store the values in the current record.
+   */
+  public String peek(boolean log) {
+    if (unprocessedRxLine != null) {
+      return unprocessedRxLine;
+    }
+    while (serial.available() > 0) {
+      var line = serial.readStringUntil('\n');
+      if (line != null) {
+        pRxTime = this.app.millis();
+        while (!line.isEmpty()
+            && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
+          line = line.substring(0, line.length() - 1);
+        }
+        if (!firstLine) {
+          if (log) {
+            PApplet.println("Rx: " + line);
+          }
+          unprocessedRxLine = line;
+          return line;
+        }
+        firstLine = false;
       }
     }
+    return null;
+  }
+
+  public String read(boolean log) {
+    var line = peek(log);
+    if (line != null) {
+      pRxLine = line;
+      unprocessedRxLine = null;
+    }
+    return line;
   }
 }
