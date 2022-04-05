@@ -38,19 +38,21 @@ It does not support the Stable release, Processsing 3.5.4.
 2. Uncompress the downloaded archive file, to create a folder "SerialRecord".
 3. Move the SerialRecord folder into the folder Process/Libraries in your home directory.
 
-The next time you start the Processing IDE, you will find examples from the "File > Examples" menu. Remember to make a
-copy of an example before you modify it: Processing (unlike the Arduino IDE) will not do this for you.
+The next time you start the Processing IDE, you will find examples from the "File > Examples" menu.
+
+Note: Remember to make a copy of an example before you modify it: The Processing
+IDE (unlike the Arduino IDE) will not do this for you.
 
 ## Examples
 
-Once you install the library, these examples are available from the "File >
-Examples" menu.
+Once you install the library, these examples are available from the *File >
+Examples* menu.
 
-Each of them is designed to pair with an example in the [Arduino SerialRecord]
+Each example is designed to pair with an example in the [Arduino SerialRecord]
 library, but they can also be used with other sketches, or as a starting point
 for your own work.
 
-![](docs/examples-browser.png)
+![](docs/processing-examples.png)
 
 You can also review them
 [on GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
@@ -61,17 +63,17 @@ You can also review them
   screenshot above), and/or logged to the console.
 - Received records that have too few or too many values result in a warning
   in the console.
-- When used with the Arduino_SerialRecord library, sending a different number
+- When used with the [Arduino SerialRecord] library, sending a different number
   of values than the code running on the Arduino expects, results in a warning
   in the Processing console.
-- When used with the Arduino_SerialRecord library, a command can be used to
+- When used with the [Arduino SerialRecord] library, a command can be used to
   request that the Arduino send back the values that it received, for debugging.
   This can be done once, or at periodic intervals.
 
 ## Acknowledgements
 
-The idea of providing this code as a library was inspired by copy-paste code
-provided to students by the NYU Shanghai IMA "Interaction Lab" course.
+The idea of providing this code as a library was inspired by code
+provided to students by the NYU Shanghai IMA "Interaction Lab" course, for them to copy and paste into their sketches.
 
 ## License
 
