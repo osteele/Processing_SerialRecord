@@ -6,11 +6,12 @@ serial port.
 The library transmits the values in ASCII. Each record is a sequence of ASCII
 representations of numbers, separated by a comma and terminated by a newline.
 
-This library can be used in conjunction with the [Arduino
-SerialRecord](https://github.com/osteele/Arduino_SerialRecord) library on
-Arduino, but does not require it.
+This library can be used in conjunction with the [Arduino SerialRecord] library
+for the Arduino, but does not require it.
 
 ![](docs/screenshot.png "Screenshot")
+
+[Arduino SerialRecord]: https://osteele.github.io/Arduino_SerialRecord/
 
 ## Design Goals
 
@@ -30,17 +31,18 @@ Arduino, but does not require it.
 
 ## Installation
 
-1. Visit this repository's [Releases
-   page](https://github.com/osteele/Processing_SerialRecord/releases).
-2. Near the latest release at top of the page, under Assets, download the
-   `SerialRecord-…-processing-library.zip` file.
-3. Unzip the downloaded archive file, into a folder SerialRecord.
-4. Move the SerialRecord folder into the folder Process/Libraries, in your home
-   directory.
+1. Download <https://assets.osteele.com.s3.amazonaws.com/processing/SerialRecord.zip>.
+2. Uncompress the downloaded archive file, to create a folder "SerialRecord".
+3. Move the SerialRecord folder into the folder Process/Libraries in your home directory.
 
 The next time you start Processing, you will find examples in the File >
 Examples menu item. Remember to make a copy of an example before you modify it:
 Processing (unlike the Arduino IDE) will not do this for you.
+
+## Examples
+
+Once you install the library, these examples are available in the File > Examples. You can also review them
+[here](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
 
 ## Features
 
