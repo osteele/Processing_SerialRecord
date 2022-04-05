@@ -1,6 +1,20 @@
 package osteele.processing.SerialRecord;
 
 class Utils {
+  static String humanTime(int age) {
+    if (age < 1000) {
+      return String.format("%d ms", age);
+    } else if (age < 60 * 1000) {
+      return String.format("%d s", age / 1000);
+    } else {
+      int minutes = age / 60 / 1000;
+      var s = String.format("%d minute", minutes);
+      if (minutes > 1)
+        s += "s";
+      return s;
+    }
+  }
+
   static String stringInterpolate(int[] array, String separator) {
     var result = new StringBuffer();
     Boolean first = true;
@@ -17,5 +31,15 @@ class Utils {
 
   static String stringInterpolate(int[] array) {
     return stringInterpolate(array, ", ");
+  }
+
+  static String trimRight(String line) {
+    // optimized for the case where there is 0 or 1 trailing newline
+    while (!line.isEmpty()
+        && (line.endsWith("\r") || line.endsWith("\n")
+            || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
+      line = line.substring(0, line.length() - 1);
+    }
+    return line;
   }
 }

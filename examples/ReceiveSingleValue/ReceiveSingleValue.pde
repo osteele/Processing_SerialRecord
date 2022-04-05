@@ -28,7 +28,7 @@ void draw() {
   serialRecord.read();
   int value = serialRecord.get();
 
-  float x = value / 100 % width;
+  float y = map(value2, 0, 1024, 0, height);
   line(x, 0, x, height);
 
   serialRecord.draw();

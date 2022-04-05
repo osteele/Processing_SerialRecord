@@ -10,12 +10,14 @@ import processing.serial.*;
  * the format that is used by the Arduino Serial Plotter.)
  */
 public class SerialRecord {
+  /** The serial port. */
+  public Serial serialPort;
   /** The number of values. */
   public int size;
   /** The array of values. */
   public int values[];
-  /** The serial port. */
-  public Serial serialPort;
+  /** The array of field names. */
+  public String fieldNames[];
 
   public SerialRecord(PApplet app, Serial port, int size) {
     this.app = app;
@@ -23,6 +25,7 @@ public class SerialRecord {
     this.serialPort = port;
     this.size = size;
     this.values = new int[size];
+    this.fieldNames = new String[size];
   }
 
   public int get() {
@@ -54,25 +57,36 @@ public class SerialRecord {
    * If data is available on the serial port, synchronously read a line from
    * the serial port and store the values in the current record.
    */
-  public void receiveIfAvailable() {
+  public boolean receiveIfAvailable() {
     var line = portConnection.read(mLog);
     if (line != null) {
       processReceivedLine(line);
+      return true;
     }
-  }
-
-  public void read() {
-    receiveIfAvailable();
+    return false;
   }
 
   /**
-   * Display the last transmitted (TX) and received (RX) values on the canvas.
+   * If data is available on the serial port, synchronously read a line from the
+   * serial port and store the values in the current record. A synonym for
+   * readIfAvailable().
+   */
+  public boolean read() {
+    return receiveIfAvailable();
+  }
+
+  /**
+   * Display the most-recently transmitted (TX) and received (RX) values on the
+   * canvas.
    *
    * @param x the x-coordinate of the upper-left corner of the display area
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
     var pRxLine = portConnection.read(mLog);
+    if (pRxLine == null) {
+      pRxLine = portConnection.pRxLine;
+    }
     if (pTxLine != null) {
       this.app.text("TX: " + pTxLine, x, y);
     }
@@ -83,7 +97,7 @@ public class SerialRecord {
         message = pRxLine;
         int age = this.app.millis() - portConnection.pRxTime;
         if (age >= 1000) {
-          message += String.format(" (%s ago)", humanTime(age));
+          message += String.format(" (%s ago)", Utils.humanTime(age));
         }
       }
       this.app.text("RX: " + message, x, y);
@@ -91,8 +105,8 @@ public class SerialRecord {
   }
 
   /**
-   * Display the last transmitted (TX) and received (RX) values at the lower
-   * left corner of the canvas.
+   * Display the most-recently transmitted (TX) and received (RX) values at the
+   * lower left corner of the canvas.
    */
   public void draw() {
     var y = this.app.height - 2 * (this.app.textAscent() + this.app.textDescent());
@@ -125,51 +139,40 @@ public class SerialRecord {
   private String pTxLine;
   private PortConnection portConnection;
   private int pPeriodicEchoRequestTime = 0;
-  private boolean mLog = true;
-
-  private String humanTime(int age) {
-    if (age < 1000) {
-      return String.format("%d ms", age);
-    } else if (age < 60 * 1000) {
-      return String.format("%d s", age / 1000);
-    } else {
-      int minutes = age / 60 / 1000;
-      var s = String.format("%d minute", minutes);
-      if (minutes > 1)
-        s += "s";
-      return s;
-    }
-  }
+  private boolean mLog = false;
 
   private void processReceivedLine(String line) {
     if (line.isBlank()) {
       return;
     }
-    if (!Character.isDigit(line.charAt(0))) {
-    // This could be a warning or error message.
     if (line.startsWith("Warning:") || line.startsWith("Error:")) {
-    PGraphics.showWarning(line);
-    }
-    return;
+      PGraphics.showWarning(line);
     }
     var values = line.split(",");
     if (values.length != size) {
-    var message = String.format("Expected %d value(s), but received %d value(s)",
-    size, values.length);
-    PGraphics.showWarning(message);
+      var message = String.format("Expected %d value(s), but received %d value(s)",
+          size, values.length);
+      PGraphics.showWarning(message);
     }
     int n = Math.min(values.length, size);
     for (int i = 0; i < n; i++) {
-    try {
-    this.values[i] = Integer.parseInt(values[i]);
-    } catch (NumberFormatException e) {
-    PGraphics.showWarning("Received line contains an invalid value: " +
-    values[i]);
-    break;
-    }
-    }
+      String field = values[i];
+      fieldNames[i] = null;
+      if (field.contains(":")) {
+        var split = field.split(":", 2);
+        fieldNames[i] = split[0];
+        field = split[1];
+      }
+      try {
+        this.values[i] = Integer.parseInt(field);
+      } catch (NumberFormatException e) {
+        PGraphics.showWarning("Received line contains an invalid value: " +
+            field);
+        break;
+      }
     }
   }
+}
 
 /**
  * Mediates the connection between multiple SerialRecords connected to the same
@@ -177,17 +180,17 @@ public class SerialRecord {
  * instead of per-SerialRecord basis.
  */
 class PortConnection {
-  private static Map<Serial, PortConnection> map = new HashMap<Serial, PortConnection>();
+  private static Map<Serial, PortConnection> portMap = new HashMap<Serial, PortConnection>();
 
   /**
    * Get the instance for the specified port. Create a new instance if none
    * exists.
    */
   static PortConnection get(PApplet app, Serial serial) {
-    var connection = map.get(serial);
+    var connection = portMap.get(serial);
     if (connection == null) {
       connection = new PortConnection(app, serial);
-      map.put(serial, connection);
+      portMap.put(serial, connection);
     }
     return connection;
   }
@@ -195,6 +198,7 @@ class PortConnection {
   Serial serial;
   String pRxLine;
   int pRxTime;
+
   private PApplet app;
   private String unprocessedRxLine;
   private boolean firstLine = true;
@@ -216,6 +220,7 @@ class PortConnection {
       var line = serial.readStringUntil('\n');
       if (line != null) {
         pRxTime = this.app.millis();
+        line = Utils.trimRight(line);
         while (!line.isEmpty()
             && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
           line = line.substring(0, line.length() - 1);
