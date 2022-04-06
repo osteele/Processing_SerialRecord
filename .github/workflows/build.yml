@@ -6,16 +6,48 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - uses: actions/checkout@v3
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
+          distribution: adopt
+          java-package: jdk
           java-version: '11'
-          distribution: 'adopt'
-      # - name: Build
-      #   uses: qcastel/github-actions-maven/actions/maven@master
-      #   with:
-      #     maven-args: "clean package"
-      - name: Create JAR
-        run: mvn package
+
+      - name: Build the JAR file
+        run: mvn package --batch-mode
+
+      - name: Build the zip file
+        run: mvn assembly:single --batch-mode
+
+      - name: Cache Processing
+        uses: actions/cache@v2
+        id: cache-processing
+        with:
+          path: processing
+          key: ${{ runner.os }}-processing-4.0b2
+          restore-keys: ${{ runner.os }}-processing
+
+      - name: Setup Processing
+        uses: ifP1/setup-processing@v1.1.1
+        with:
+          version: 4.0b2
+
+      - name: Install library
+        run: |
+          mkdir -p ~/.processing/libraries
+          unzip target/SerialRecord-*.zip -d ~/.processing/libraries
+          # echo ~/.processing/libraries/*
+          # ls ~/.processing/libraries/*
+
+      - name: Build examples
+        run: |
+          ./scripts/build-examples.sh

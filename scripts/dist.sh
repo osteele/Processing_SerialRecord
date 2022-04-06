@@ -11,7 +11,7 @@ PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
 name=$(xml2 < pom.xml | grep -oP '^/project/artifactId=\K.+')
 version=$(xml2 < pom.xml | grep -oP '^/project/version=\K.+')
 
-mvn clean package
+mvn clean package assembly:single
 
 project_file=library.properties
 zip_file=target/SerialRecord-${version}-processing-library.zip

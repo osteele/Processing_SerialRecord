@@ -2,5 +2,8 @@
   "java.configuration.updateBuildConfiguration": "automatic",
   "markdownlint.config": {
     "MD045": false,
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/osteele/Documents/Processing/libraries/SerialRecord/.github/workflows/build.yml"
   }
 }
