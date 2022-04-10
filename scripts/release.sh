@@ -27,10 +27,17 @@ do
 done
 
 name=$(grep -oP '^name=\K.+' $project_file)
-version=$(grep -oP '^prettyVersion=\K.+' $project_file)
-tag="v${version}"
+project_version=$(grep -oP '^prettyVersion=\K.+' $project_file)
+pom_version=$(xml2 < pom.xml | grep -oP '^/project/version=\K.+')
+tag=v${project_version}
 
-zip_file=target/SerialRecord-${version}-processing-library.zip
+# print an error and exit if the project version and pom version differ
+if [ "$project_version" != "$pom_version" ]; then
+    echo "Project version ($project_version) does not match pom version ($pom_version)" >&2
+    exit 1
+fi
+
+zip_file=target/SerialRecord-${project_version}-processing-library.zip
 mvn clean package assembly:single
 
 mkdir -p dist

@@ -17,6 +17,24 @@
       "label": "Build Javadocs",
       "type": "shell",
       "command": "mvn javadoc:javadoc && open target/reference/apidocs/index.html"
+    },
+    {
+      "label": "Deploy",
+      "type": "shell",
+      "command": "./scripts/deploy.sh",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build"
+      }
+    },
+    {
+      "label": "Release",
+      "type": "shell",
+      "command": "./scripts/release.sh",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build"
+      }
     }
   ]
 }
