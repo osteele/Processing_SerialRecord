@@ -1,6 +1,6 @@
 /* Example sketch for the SerialRecord library for Processing.
  *
- * Receives an integers from the serial port, and use it to control
+ * Receives an integer from the serial port, and uses it to control
  * the horizontal positon of a line on the canvas.
  */
 
@@ -28,7 +28,7 @@ void draw() {
   serialRecord.read();
   int value = serialRecord.get();
 
-  float y = map(value2, 0, 1024, 0, height);
+  float x = map(value, 0, 1024, 0, height);
   line(x, 0, x, height);
 
   serialRecord.draw();
