@@ -26,7 +26,7 @@ public class SerialUtils {
    */
   public static String findArduinoPort() {
     List<String> ports = Arrays.asList(Serial.list());
-    for (var prefix : new String[] { "/dev/cu.usbmodem", "/dev/tty.usbmodem" }) {
+    for (String prefix : new String[] { "/dev/cu.usbmodem", "/dev/tty.usbmodem" }) {
       List<String> selected = ports.stream()
           .filter(s -> s.startsWith(prefix))
           .collect(Collectors.toList());

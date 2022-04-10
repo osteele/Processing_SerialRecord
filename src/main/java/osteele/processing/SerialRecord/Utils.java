@@ -8,7 +8,7 @@ class Utils {
       return String.format("%d s", age / 1000);
     } else {
       int minutes = age / 60 / 1000;
-      var s = String.format("%d minute", minutes);
+      String s = String.format("%d minute", minutes);
       if (minutes > 1)
         s += "s";
       return s;
@@ -16,9 +16,9 @@ class Utils {
   }
 
   static String stringInterpolate(int[] array, String separator) {
-    var result = new StringBuffer();
+    StringBuffer result = new StringBuffer();
     Boolean first = true;
-    for (var elt : array) {
+    for (int elt : array) {
       if (first) {
         first = false;
       } else {

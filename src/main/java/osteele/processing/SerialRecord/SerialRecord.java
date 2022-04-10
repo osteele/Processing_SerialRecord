@@ -44,7 +44,7 @@ public class SerialRecord {
 
   /** Send the values in the urrent record to the serial port. */
   public void send() {
-    var record = Utils.stringInterpolate(values, ",");
+    String record = Utils.stringInterpolate(values, ",");
     pTxLine = record;
     if (mLog) {
       PApplet.println("TX: " + record);
@@ -58,7 +58,7 @@ public class SerialRecord {
    * the serial port and store the values in the current record.
    */
   public boolean receiveIfAvailable() {
-    var line = portConnection.read(mLog);
+    String line = portConnection.read(mLog);
     if (line != null) {
       processReceivedLine(line);
       return true;
@@ -83,7 +83,7 @@ public class SerialRecord {
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
-    var pRxLine = portConnection.read(mLog);
+    String pRxLine = portConnection.read(mLog);
     if (pRxLine == null) {
       pRxLine = portConnection.pRxLine;
     }
@@ -92,7 +92,7 @@ public class SerialRecord {
     }
     if (pRxLine == null || !pRxLine.isEmpty()) {
       y += this.app.textAscent() + this.app.textDescent();
-      var message = "Click to request an echo from the Arduino";
+      String message = "Click to request an echo from the Arduino";
       if (pRxLine != null) {
         message = pRxLine;
         int age = this.app.millis() - portConnection.pRxTime;
@@ -109,7 +109,7 @@ public class SerialRecord {
    * lower left corner of the canvas.
    */
   public void draw() {
-    var y = this.app.height - 2 * (this.app.textAscent() + this.app.textDescent());
+    float y = this.app.height - 2 * (this.app.textAscent() + this.app.textDescent());
     draw(10, y);
   }
 
@@ -142,15 +142,15 @@ public class SerialRecord {
   private boolean mLog = false;
 
   private void processReceivedLine(String line) {
-    if (line.isBlank()) {
+    if (line.isEmpty()) {
       return;
     }
     if (line.startsWith("Warning:") || line.startsWith("Error:")) {
       PGraphics.showWarning(line);
     }
-    var values = line.split(",");
+    String[] values = line.split(",");
     if (values.length != size) {
-      var message = String.format("Expected %d value(s), but received %d value(s)",
+      String message = String.format("Expected %d value(s), but received %d value(s)",
           size, values.length);
       PGraphics.showWarning(message);
     }
@@ -159,7 +159,7 @@ public class SerialRecord {
       String field = values[i];
       fieldNames[i] = null;
       if (field.contains(":")) {
-        var split = field.split(":", 2);
+        String[] split = field.split(":", 2);
         fieldNames[i] = split[0];
         field = split[1];
       }
@@ -187,7 +187,7 @@ class PortConnection {
    * exists.
    */
   static PortConnection get(PApplet app, Serial serial) {
-    var connection = portMap.get(serial);
+    PortConnection connection = portMap.get(serial);
     if (connection == null) {
       connection = new PortConnection(app, serial);
       portMap.put(serial, connection);
@@ -217,7 +217,7 @@ class PortConnection {
       return unprocessedRxLine;
     }
     while (serial.available() > 0) {
-      var line = serial.readStringUntil('\n');
+      String line = serial.readStringUntil('\n');
       if (line != null) {
         pRxTime = this.app.millis();
         line = Utils.trimRight(line);
@@ -239,7 +239,7 @@ class PortConnection {
   }
 
   public String read(boolean log) {
-    var line = peek(log);
+    String line = peek(log);
     if (line != null) {
       pRxLine = line;
       unprocessedRxLine = null;
