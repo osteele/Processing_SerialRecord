@@ -6,7 +6,7 @@
   <groupId>com.osteele</groupId>
   <artifactId>SerialRecord</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.1</version>
+  <version>0.2.2</version>
 
   <name>serialrecord</name>
   <url>http://github.com/osteele/SerialRecord</url>
@@ -79,9 +79,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>3.3.2</version>
           <configuration>
-            <reportOutputDirectory>target/reference</reportOutputDirectory>
+            <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
+            <destDir>reference</destDir>
             <source>11</source>
           </configuration>
         </plugin>

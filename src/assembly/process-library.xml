@@ -28,6 +28,10 @@
       <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>
     <fileSet>
+      <directory>${project.basedir}/reference</directory>
+      <useDefaultExcludes>true</useDefaultExcludes>
+    </fileSet>
+    <fileSet>
       <directory>${project.basedir}/src</directory>
       <useDefaultExcludes>true</useDefaultExcludes>
     </fileSet>

@@ -19,6 +19,13 @@ public class SerialRecord {
   /** The array of field names. */
   public String fieldNames[];
 
+  /**
+   * Constructor.
+   *
+   * @param app  the PApplet (generally this)
+   * @param port the serial port
+   * @param size the number of values
+   */
   public SerialRecord(PApplet app, Serial port, int size) {
     this.app = app;
     this.portConnection = PortConnection.get(app, port);
@@ -28,11 +35,20 @@ public class SerialRecord {
     this.fieldNames = new String[size];
   }
 
+  /**
+   * Return the first value in the array.
+   *
+   * @return the first value
+   */
   public int get() {
     return values[0];
   }
 
-  /** Set to true to print transmited and received lines to the console. */
+  /**
+   * Set to true to print transmited and received lines to the console.
+   *
+   * @param flag Enable logging if true.
+   */
   public void log(boolean flag) {
     mLog = flag;
   }
@@ -56,6 +72,8 @@ public class SerialRecord {
   /**
    * If data is available on the serial port, synchronously read a line from
    * the serial port and store the values in the current record.
+   *
+   * @return true if data was available and read.
    */
   public boolean receiveIfAvailable() {
     String line = portConnection.read(mLog);
@@ -70,6 +88,8 @@ public class SerialRecord {
    * If data is available on the serial port, synchronously read a line from the
    * serial port and store the values in the current record. A synonym for
    * readIfAvailable().
+   *
+   * @return true if data was available and read.
    */
   public boolean read() {
     return receiveIfAvailable();

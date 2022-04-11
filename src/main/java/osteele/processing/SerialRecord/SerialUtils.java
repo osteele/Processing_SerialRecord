@@ -8,7 +8,7 @@ import processing.core.*;
 import processing.serial.*;
 
 /** Utility functions that make it easier to use the serial port. */
-public class SerialUtils {
+abstract public class SerialUtils {
   /**
    * Find the serial port that, based on its name, is probably connected to an
    * Arduino.

@@ -23,7 +23,7 @@ do
         skip_tag=true
     elif [ "$arg" == "--force-tag" ]; then
         force_tag_option="--force"
-    fi
+    else echo "Unknown option: $arg" >&2; exit 1; fi
 done
 
 name=$(grep -oP '^name=\K.+' $project_file)
@@ -31,6 +31,7 @@ project_version=$(grep -oP '^prettyVersion=\K.+' $project_file)
 pom_version=$(xml2 < pom.xml | grep -oP '^/project/version=\K.+')
 tag=v${project_version}
 
+# TODO DRY deploy.sh
 # print an error and exit if the project version and pom version differ
 if [ "$project_version" != "$pom_version" ]; then
     echo "Project version ($project_version) does not match pom version ($pom_version)" >&2
@@ -38,7 +39,7 @@ if [ "$project_version" != "$pom_version" ]; then
 fi
 
 zip_file=target/SerialRecord-${project_version}-processing-library.zip
-mvn clean package assembly:single
+mvn clean package javadoc:javadoc assembly:single
 
 mkdir -p dist
 find dist -type f -delete
