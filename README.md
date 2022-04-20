@@ -56,12 +56,14 @@ not require it.
 
 ## Installation
 
-1. Download <https://assets.osteele.com.s3.amazonaws.com/processing/SerialRecord.zip>.
-2. Uncompress the downloaded archive file, to create a folder "SerialRecord".
-3. Move the SerialRecord folder into the folder Process/Libraries in your home directory.
+Use Processing's Contribution Manager to install this library:
 
-The next time you start the Processing IDE, you can find examples from the
-*File > Examples* menu.
+1. From Processing *Tools* menu, select *Add Tool…*. ![](docs/add-tool-menu-item.png)
+2. Select the *Libraries* tab.
+3. Search for "serialrecord".
+4. Click *Install*.
+
+![](docs/processing-library-manager.png)
 
 Note: Remember to make a copy of an example before you modify it. The Processing
 IDE (unlike the Arduino IDE) will not do this for you.
