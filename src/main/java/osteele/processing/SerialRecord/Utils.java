@@ -1,6 +1,7 @@
 package osteele.processing.SerialRecord;
 
-class Utils {
+/** Utilities that are private to the package. */
+interface Utils {
   static String humanTime(int age) {
     if (age < 1000) {
       return String.format("%d ms", age);
