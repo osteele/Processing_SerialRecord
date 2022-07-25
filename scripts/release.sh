@@ -29,7 +29,7 @@ done
 name=$(grep -oP '^name=\K.+' $project_file)
 project_version=$(grep -oP '^prettyVersion=\K.+' $project_file)
 pom_version=$(xml2 < pom.xml | grep -oP '^/project/version=\K.+')
-tag=v${project_version}
+tag_name=v${project_version}
 
 # TODO DRY deploy.sh
 # print an error and exit if the project version and pom version differ
@@ -46,12 +46,12 @@ find dist -type f -delete
 cp $project_file dist/
 mv ${zip_file} dist/${name}.zip
 
-# skip the tag if skip_tag is set
+# skip the tag if skip_tag is true
 if [ "$skip_tag" = false ]; then
-  git tag ${force_tag_option} -a "${tag}" -m "Release $version"
-  git push ${force_tag_option} origin "${tag}"
+  git tag ${force_tag_option} -a "${tag_name}" -m "Release $project_version"
+  git push ${force_tag_option} origin "${tag_name}"
 fi
 
 
-ghr -u "${OWNER}" -r "${REPO}" -prerelease "${tag}" dist
+ghr -u "${OWNER}" -r "${REPO}" -prerelease "${tag_name}" dist
 open "https://github.com/${OWNER}/${REPO}/releases"
