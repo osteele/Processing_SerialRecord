@@ -166,17 +166,21 @@ public class SerialRecord {
       return;
     }
     if (line.startsWith("Warning:") || line.startsWith("Error:")) {
-      PGraphics.showWarning(line);
+      PGraphics.showWarning("[Arduino] " + line);
     }
-    String[] values = line.split(",");
-    if (values.length != size) {
+    String[] fields = line.split("[,; \t]");
+    if (fields.length != size) {
       String message = String.format("Expected %d value(s), but received %d value(s)",
-          size, values.length);
+          size, fields.length);
       PGraphics.showWarning(message);
     }
-    int n = Math.min(values.length, size);
+    // Go ahead and read as many fields as fit into the record, even if the
+    // number of fields is different from the specified record size. This
+    // simplifies incrementally development: the user may not need to re-flash
+    // the Arduino quite as much.
+    int n = Math.min(fields.length, size);
     for (int i = 0; i < n; i++) {
-      String field = values[i];
+      String field = fields[i];
       fieldNames[i] = null;
       if (field.contains(":")) {
         String[] split = field.split(":", 2);
