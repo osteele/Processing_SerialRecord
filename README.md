@@ -82,6 +82,15 @@ starting point for your own work.
 You may also review the examples [on
 GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
 
+## Alternatives
+
+It is relatively easy to transmit data between the Arduino and Processing without a library.
+
+- [Firmata](https://github.com/firmata/arduino), which features declarative
+  binding of value positions to sensors or pin numbers.
+- [VSync Library](http://ernestum.github.io/VSync/) for the Arduino platform
+  "magically" synchronizes Arduino and Processing variables.
+
 ## Acknowledgements
 
 The idea of providing this code as a library was inspired by code provided to
