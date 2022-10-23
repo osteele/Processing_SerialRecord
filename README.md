@@ -56,9 +56,10 @@ not require it.
 
 ## Installation
 
-Use Processing's Contribution Manager to install this library:
+Use Processing's *Contribution Manager* to install this library:
 
-1. From Processing *Tools* menu, select *Add Tool…*. ![](docs/add-tool-menu-item.png)
+1. From the Processing IDE's *Tools* menu, select *Manage Tools…*.
+   ![](docs/manage-tools-menu-item.png)
 2. Select the *Libraries* tab.
 3. Search for "serialrecord".
 4. Click *Install*.
