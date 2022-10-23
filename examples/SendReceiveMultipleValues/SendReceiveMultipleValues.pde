@@ -27,9 +27,15 @@ void setup() {
     return;
   }
   serialPort = new Serial(this, serialPortName, 9600);
-  // change the number on the next line to send different numbers of values
+
+  // In order to send a different number of values, modify the number `2` on the
+  // next line to the number values to send. The corresponding number in the
+  // Arduino sketch should be modified as well.
   sender = new SerialRecord(this, serialPort, 2);
-  receiver = new SerialRecord(this, serialPort, 2);
+
+  // If the Arduino sends a different number of values, modify the number `2` on
+  // the next line to match the number of values that it sends.
+  receiver = new SerialRecord(this, serialPort, 3);
 }
 
 void draw() {
