@@ -2,6 +2,10 @@ package osteele.processing.SerialRecord;
 
 import processing.core.*;
 
+/**
+ * This class is public in order to use Processing's "registered library
+ * method" mechanism. It is not intended for direct use.
+ */
 public class CanvasLogger {
   private final PApplet app;
   private final SerialPortConnection portConnection;

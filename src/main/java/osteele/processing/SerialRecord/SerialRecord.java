@@ -96,8 +96,6 @@ public class SerialRecord {
 
   /**
    * Display transmited and received lines on the canvas.
-   *
-   * @param flag Enable logging if true.
    */
   public void logToCanvas() {
     logToCanvas(true);
@@ -114,8 +112,6 @@ public class SerialRecord {
 
   /**
    * Display transmited and received lines on the canvas.
-   *
-   * @param flag Enable logging if true.
    */
   public void logToConsole() {
     logToConsole(true);

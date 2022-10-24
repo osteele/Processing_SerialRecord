@@ -101,6 +101,7 @@ public interface SerialUtils {
     return null;
   }
 
+  /** This method is not intended to be used publically. */
   public static void _printSerialPorts() {
     PApplet.println("Available serial ports:");
     PApplet.printArray(Serial.list());
