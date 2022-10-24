@@ -6,6 +6,12 @@ it is designed to be easy to use, to detect when it is used incorrectly, and to
 detect and report when it receives invalid data. It also has an option to
 display the data sent to the and received from the serial port on the canvas.
 
+The library also provides a function, `SerialUtils.findArduinoPort()`, that (on
+macOS) attempts to find the serial port that the Arduino is connected to. This
+can be used to write sketches that do not need to be modified when they are run
+on another computer, or when the Arduino is connected to another USB port. This
+function can be used independently of the other functionality in this library.
+
 Data is sent as comma-separated ASCII. This format is easy to view and interact
 with in the Arduino Serial Monitor, and is compatible with the Arduino Serial
 Plotter.
