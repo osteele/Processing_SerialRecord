@@ -7,11 +7,11 @@ detect and report when it receives invalid data. It also has an option to
 display the data sent to the and received from the serial port on the canvas.
 
 The library also provides a function,
-[`SerialUtils.findArduinoPort()`](https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port),
-that attempts to find the serial port that the Arduino is connected to. This can
-be used to write sketches that do not need to be modified when they are run on
-another computer, or when the Arduino is connected to another USB port. This
-function can be used independently of the other functionality in this library.
+[`SerialUtils.findArduinoPort()`][findArduinoPort], that attempts to find the
+serial port that the Arduino is connected to. This can be used to write sketches
+that do not need to be modified when they are run on another computer, or when
+the Arduino is connected to another USB port. This function can be used
+independently of the other functionality in this library.
 
 Data is sent as comma-separated ASCII. This format is easy to view and interact
 with in the Arduino Serial Monitor, and is compatible with the Arduino Serial
@@ -20,9 +20,10 @@ Plotter.
 The Library can be used with the [SerialRecord library for Arduino], but does
 not require it.
 
-![](docs/screenshot.png "Screenshot")
+![](docs/screenshot.png "Screenshot" )
 
 [SerialRecord library for Arduino]: https://osteele.github.io/Arduino_SerialRecord/
+[findArduinoPort]: https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port
 
 ## Design Goals
 
@@ -82,13 +83,22 @@ Once you install the library, examples are available from the *File > Examples*
 menu.
 
 Each example is designed to pair with an example in the [SerialRecord library
-for Arduino] library, but they can also be used with other sketches, or as a
-starting point for your own work.
+for Arduino] library. However, the examples can also be used with other Arduino
+sketches (so long as those sketches are written to send or receive to expected
+number of values), or as a starting point for your own work.
 
 ![](docs/processing-examples.png)
 
 You may also review the examples [on
 GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
+
+The examples use the [`SerialUtils.findArduinoPort()`][findArduinoPort] to discover which serial port is connected to the Arduino. If an Arduino is connected to the computer, and this function is unable to discover it, the console at the bottom of the Processing sketch window will print a list of serial ports, ending with by the text:
+
+> `See https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port for information on how to identify the appropriate serial port.`
+
+If this occurs, follow the link in that message,
+<https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port>,
+for instructions as to how to modify the sketch.
 
 ## Alternatives
 
