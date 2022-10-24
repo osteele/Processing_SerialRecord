@@ -42,7 +42,6 @@ public class SerialRecord {
    * @param size the number of values
    */
   public SerialRecord(PApplet app, Serial port, int size) {
-    this.app = app;
     this.portConnection = SerialPortConnection.get(app, port);
     this.serialPort = port;
     this.size = size;
@@ -180,11 +179,7 @@ public class SerialRecord {
    * @param interval the interval, in milliseconds, between requests for an echo
    */
   public void periodicEchoRequest(int interval) {
-    if (pPeriodicEchoRequestTime + interval < this.app.millis()) {
-      pPeriodicEchoRequestTime = this.app.millis();
-      this.requestEcho();
-    }
-    portConnection.read();
+    portConnection.periodicEchoRequest(interval);
   }
 
   /**
@@ -196,9 +191,7 @@ public class SerialRecord {
   }
 
   static private String libraryName = "SerialRecord"; // used in error reporting
-  private PApplet app;
   private SerialPortConnection portConnection;
-  private int pPeriodicEchoRequestTime = 0;
 
   private void showWarning(String message) {
     PGraphics.showWarning(String.format("%s: %s", libraryName, message));

@@ -56,14 +56,8 @@ void draw() {
   fill(255, 0, 0);
   circle(receiver.values[0], receiver.values[1], 20);
 
-  //serialRecord.periodicEchoRequest(100); // uncomment this line to request an echo every 100 ms
-
   // The following line is necessary so that the code in SerialRecord that draws
   // the last transmitted and received lines, will draw the in white, so that it
   // is visible.
   fill(255);
-}
-
-void mouseClicked() {
-  sender.requestEcho();
 }

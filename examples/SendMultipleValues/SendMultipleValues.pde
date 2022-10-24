@@ -29,6 +29,13 @@ void setup() {
   // next line to the number values to send. The corresponding number in the
   // Arduino sketch should be modified as well.
   serialRecord = new SerialRecord(this, serialPort, 2);
+
+  // Uncomment the `serialRecord.periodicEchoRequest(…)` line to request an echo
+  // every 100 ms. See
+  // <https://github.com/osteele/Processing_SerialRecord/wiki/Code-Recipes> for
+  // more information.
+
+  serialRecord.periodicEchoRequest(100);
 }
 
 void draw() {
@@ -39,8 +46,6 @@ void draw() {
   serialRecord.values[0] = int(map(mouseX, 0, width - 1, 0, 1023));
   serialRecord.values[1] = int(map(mouseY, 0, height - 1, 0, 1023));
   serialRecord.send();
-
-  //serialRecord.periodicEchoRequest(100); // uncomment this line to request an echo every 100 ms
 }
 
 void mouseClicked() {

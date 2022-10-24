@@ -25,13 +25,12 @@ class SerialPortConnection {
     return connection;
   }
 
-  final Serial serial;
+  private final Serial serial;
   String pTxLine;
   String pRxLine;
   int pRxTime;
 
   private final PApplet app;
-  private final CanvasLogger canvasLogger;
   private String unprocessedRxLine;
   private boolean firstLine = true;
   private boolean logToConsole = false;
@@ -41,6 +40,7 @@ class SerialPortConnection {
     this.app = app;
     this.serial = serial;
     this.canvasLogger = new CanvasLogger(app, this);
+    this.periodicEcho = new PeriodicEchoScheduler(app, this);
   }
 
   public void logToConsole(boolean flag) {
@@ -104,12 +104,30 @@ class SerialPortConnection {
     serial.write('\n');
   }
 
-  // Delegate to canvasLogger
+  //
+  // Delegate to CanvasLogger
+  //
+
+  private final CanvasLogger canvasLogger;
+
   void drawTxRx() {
     canvasLogger.drawTxRx();
   }
 
   void drawTxRx(float x, float y) {
     canvasLogger.drawTxRx(x, y);
+  }
+
+  //
+  // Delegate to PeriodicEcho
+  //
+  private final PeriodicEchoScheduler periodicEcho;
+
+  public void periodicEchoRequest(int interval) {
+    periodicEcho.interval = interval;
+  }
+
+  public void requestEcho() {
+    serial.write("!e\n");
   }
 }
