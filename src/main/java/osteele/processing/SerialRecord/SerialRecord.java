@@ -9,13 +9,29 @@ import processing.serial.*;
  * the format that is used by the Arduino Serial Plotter.)
  */
 public class SerialRecord {
-  /** The serial port. */
-  public Serial serialPort;
-  /** The number of values. */
-  public int size;
-  /** The array of values. */
+  /** The serial port that this SerialRecord uses for sending or receiving. */
+  public final Serial serialPort;
+
+  /**
+   * The number of values that this record was initialized to.
+   * This is also the size of the `values` array.
+   */
+  public final int size;
+
+  /**
+   * The array of values. For a record that is used to send values, values are
+   * accumulated into this array, and SerialRecord.send() sends them. For a
+   * record that is used to receive values, SerialRecord.read() fills this
+   * array, and SerialRecord.values[i] or SerialRecord.get(i) can be used to
+   * read the values.
+   */
   public int values[];
-  /** The array of field names. */
+
+  /**
+   * An array of field names. If the sender includes field names, e.g.
+   * "field1:10,field2:20", then this array stores those names, e.g. the first
+   * element will be "field1" and the second element will be "field2".
+   */
   public String fieldNames[];
 
   /**
@@ -44,28 +60,72 @@ public class SerialRecord {
   }
 
   /**
+   * Set to true to print transmited and received lines to the console and to
+   * the canvas.
+   *
+   * @param logToConsole Log Tx and Rx to the console if true.
+   * @param logToCanvas  Display Tx and Rx on the canvas if true.
+   */
+  public void log(boolean logToConsole, boolean logToCanvas) {
+    portConnection.log(logToConsole, logToCanvas);
+  }
+
+  /**
    * Set to true to print transmited and received lines to the console.
    *
    * @param flag Enable logging if true.
    */
   public void log(boolean flag) {
-    mLog = flag;
+    logToConsole(flag);
   }
 
-  /** Call to print transmited and received lines to the console. */
+  /**
+   * Log transmited and received lines to the console.
+   */
   public void log() {
-    log(true);
+    logToConsole(true);
+  }
+
+  /**
+   * Set to true to display transmited and received lines on the canvas.
+   *
+   * @param flag Enable logging if true.
+   */
+  public void logToCanvas(boolean flag) {
+    portConnection.logToCanvas(flag);
+  }
+
+  /**
+   * Display transmited and received lines on the canvas.
+   *
+   * @param flag Enable logging if true.
+   */
+  public void logToCanvas() {
+    logToCanvas(true);
+  }
+
+  /**
+   * Set to true to display transmited and received lines on the canvas.
+   *
+   * @param flag Enable logging if true.
+   */
+  public void logToConsole(boolean flag) {
+    portConnection.logToConsole(flag);
+  }
+
+  /**
+   * Display transmited and received lines on the canvas.
+   *
+   * @param flag Enable logging if true.
+   */
+  public void logToConsole() {
+    logToConsole(true);
   }
 
   /** Send the values in the urrent record to the serial port. */
   public void send() {
     String record = Utils.stringInterpolate(values, ",");
-    pTxLine = record;
-    if (mLog) {
-      PApplet.println("TX: " + record);
-    }
-    serialPort.write(record);
-    serialPort.write('\n');
+    portConnection.writeln(record);
   }
 
   /**
@@ -75,7 +135,7 @@ public class SerialRecord {
    * @return true if data was available and read.
    */
   public boolean receiveIfAvailable() {
-    String line = portConnection.read(mLog);
+    String line = portConnection.read();
     if (line != null) {
       processReceivedLine(line);
       return true;
@@ -102,25 +162,7 @@ public class SerialRecord {
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
-    String pRxLine = portConnection.read(mLog);
-    if (pRxLine == null) {
-      pRxLine = portConnection.pRxLine;
-    }
-    if (pTxLine != null) {
-      this.app.text("TX: " + pTxLine, x, y);
-    }
-    if (pRxLine == null || !pRxLine.isEmpty()) {
-      y += this.app.textAscent() + this.app.textDescent();
-      String message = "Click to request an echo from the Arduino";
-      if (pRxLine != null) {
-        message = pRxLine;
-        int age = this.app.millis() - portConnection.pRxTime;
-        if (age >= 1000) {
-          message += String.format(" (%s ago)", Utils.humanTime(age));
-        }
-      }
-      this.app.text("RX: " + message, x, y);
-    }
+    this.portConnection.drawTxRx(x, y);
   }
 
   /**
@@ -128,8 +170,7 @@ public class SerialRecord {
    * lower left corner of the canvas.
    */
   public void draw() {
-    float y = this.app.height - 2 * (this.app.textAscent() + this.app.textDescent());
-    draw(10, y);
+    this.portConnection.drawTxRx();
   }
 
   /**
@@ -143,7 +184,7 @@ public class SerialRecord {
       pPeriodicEchoRequestTime = this.app.millis();
       this.requestEcho();
     }
-    portConnection.read(mLog);
+    portConnection.read();
   }
 
   /**
@@ -156,10 +197,8 @@ public class SerialRecord {
 
   static private String libraryName = "SerialRecord"; // used in error reporting
   private PApplet app;
-  private String pTxLine;
   private SerialPortConnection portConnection;
   private int pPeriodicEchoRequestTime = 0;
-  private boolean mLog = false;
 
   private void showWarning(String message) {
     PGraphics.showWarning(String.format("%s: %s", libraryName, message));

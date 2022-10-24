@@ -34,6 +34,4 @@ void draw() {
   float x = map(value1, 0, 1024, 0, width);
   float y = map(value2, 0, 1024, 0, height);
   circle(x, y, 20);
-
-  serialRecord.draw();
 }

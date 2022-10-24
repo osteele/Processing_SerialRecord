@@ -41,9 +41,6 @@ void draw() {
   serialRecord.send();
 
   //serialRecord.periodicEchoRequest(100); // uncomment this line to request an echo every 100 ms
-
-  // Display the most recently transmitted (TX) and received (RX) values
-  serialRecord.draw();
 }
 
 void mouseClicked() {

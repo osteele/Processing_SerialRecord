@@ -58,9 +58,10 @@ void draw() {
 
   //serialRecord.periodicEchoRequest(100); // uncomment this line to request an echo every 100 ms
 
-  // Display the most recently transmitted (TX) and received (RX) values
+  // The following line is necessary so that the code in SerialRecord that draws
+  // the last transmitted and received lines, will draw the in white, so that it
+  // is visible.
   fill(255);
-  sender.draw();
 }
 
 void mouseClicked() {

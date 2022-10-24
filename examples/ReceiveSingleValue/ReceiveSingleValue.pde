@@ -30,6 +30,4 @@ void draw() {
 
   float x = map(value, 0, 1024, 0, height);
   line(x, 0, x, height);
-
-  serialRecord.draw();
 }

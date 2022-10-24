@@ -25,24 +25,42 @@ class SerialPortConnection {
     return connection;
   }
 
-  Serial serial;
+  final Serial serial;
+  String pTxLine;
   String pRxLine;
   int pRxTime;
 
-  private PApplet app;
+  private final PApplet app;
+  private final CanvasLogger canvasLogger;
   private String unprocessedRxLine;
   private boolean firstLine = true;
+  private boolean logToConsole = false;
+  boolean logToCanvas = true;
 
-  public SerialPortConnection(PApplet app, Serial serial) {
+  SerialPortConnection(PApplet app, Serial serial) {
     this.app = app;
     this.serial = serial;
+    this.canvasLogger = new CanvasLogger(app, this);
+  }
+
+  public void logToConsole(boolean flag) {
+    this.logToConsole = flag;
+  }
+
+  public void logToCanvas(boolean flag) {
+    this.logToCanvas = flag;
+  }
+
+  public void log(boolean logToConsole, boolean logToCanvas) {
+    this.logToConsole = logToConsole;
+    this.logToCanvas = logToCanvas;
   }
 
   /**
    * If data is available on the serial port, synchronously read a line from
    * the serial port and store the values in the current record.
    */
-  public String peek(boolean log) {
+  String peek() {
     if (unprocessedRxLine != null) {
       return unprocessedRxLine;
     }
@@ -56,7 +74,7 @@ class SerialPortConnection {
           line = line.substring(0, line.length() - 1);
         }
         if (!firstLine) {
-          if (log) {
+          if (logToConsole) {
             PApplet.println("Rx: " + line);
           }
           unprocessedRxLine = line;
@@ -68,12 +86,30 @@ class SerialPortConnection {
     return null;
   }
 
-  public String read(boolean log) {
-    String line = peek(log);
+  String read() {
+    String line = peek();
     if (line != null) {
       pRxLine = line;
       unprocessedRxLine = null;
     }
     return line;
+  }
+
+  void writeln(String line) {
+    pTxLine = line;
+    if (logToConsole) {
+      PApplet.println("TX: " + line);
+    }
+    serial.write(line);
+    serial.write('\n');
+  }
+
+  // Delegate to canvasLogger
+  void drawTxRx() {
+    canvasLogger.drawTxRx();
+  }
+
+  void drawTxRx(float x, float y) {
+    canvasLogger.drawTxRx(x, y);
   }
 }

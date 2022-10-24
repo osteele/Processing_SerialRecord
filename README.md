@@ -100,6 +100,18 @@ If this occurs, follow the link in that message,
 <https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port>,
 for instructions as to how to modify the sketch.
 
+## Code Recipes
+
+The canvas display of the most-recently transmitted and received lines is
+helpful during initial development, but at some point you may require a canvas
+that contains only what your code explicitly draws there.
+
+The [Code
+Recipes](https://github.com/osteele/Processing_SerialRecord/wiki/Code-Recipes)
+Wiki page contains recipes to disable the feature where SerialRecord displays
+information on the canvas, and to log serial communication to the console
+instead.
+
 ## Alternatives
 
 It is relatively easy to transmit data between the Arduino and Processing without a library.
