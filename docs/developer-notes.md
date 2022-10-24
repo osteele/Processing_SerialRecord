@@ -17,7 +17,7 @@ version will be picked up (within a day?) by the Processing aggregator.
 Note: This does *not* update the project version. For that, perform the steps in
 the "update the library version" recipe.
 
-`./scripts/deploy.sh`
+`./scripts/publish.sh`
 
 ### Update the library version
 

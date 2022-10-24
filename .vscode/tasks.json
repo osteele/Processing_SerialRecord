@@ -19,18 +19,18 @@
       "command": "mvn javadoc:javadoc && open target/reference/apidocs/index.html"
     },
     {
-      "label": "Deploy",
+      "label": "Publish",
       "type": "shell",
-      "command": "./scripts/deploy.sh",
+      "command": "./scripts/publish.sh",
       "problemMatcher": [],
       "group": {
         "kind": "build"
       }
     },
     {
-      "label": "Release",
+      "label": "GitHub Release",
       "type": "shell",
-      "command": "./scripts/release.sh",
+      "command": "./scripts/github-release.sh",
       "problemMatcher": [],
       "group": {
         "kind": "build"
