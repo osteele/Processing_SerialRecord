@@ -26,6 +26,8 @@ public interface SerialUtils {
    */
   public static String findArduinoPort() {
     List<String> ports = Arrays.asList(Serial.list());
+    // macOS: Scan for one of these prefixes.
+    // Note: This code will run on other platforms, but is harmless.
     for (String prefix : new String[] { "/dev/cu.usbmodem", "/dev/tty.usbmodem" }) {
       List<String> selected = ports.stream()
           .filter(s -> s.startsWith(prefix))
@@ -44,8 +46,65 @@ public interface SerialUtils {
       }
       return selected.get(0);
     }
-    PApplet.println("No Arduino port found. Available serial ports:");
-    PApplet.printArray(Serial.list());
+    // Windows: if there is a single COM port, use that.
+    // Note: This code differs from the preceding block, in that it will not
+    // default to the first matching if there are several.
+    // Note: This code will run on other platforms, but is harmless.
+    {
+      List<String> selected = ports.stream()
+          .filter(s -> s.startsWith("COM"))
+          .collect(Collectors.toList());
+      if (selected.size() == 1) {
+        return selected.get(0);
+      }
+    }
+    PApplet.println("SerialUtils: Couldn't determine which serial port is connected to the Arduino.");
+    _printSerialPorts();
     return null;
+  }
+
+  /**
+   * Return port if it names a serial port. Otherwise print a list of serial
+   * ports, and return null.
+   *
+   * @param port The name of the serial port to return, if it is present in the
+   *             list of serial ports.
+   *
+   * @return The port argument if it names a serial port, otherwise null.
+   */
+  public static String findArduinoPort(String port) {
+    List<String> ports = Arrays.asList(Serial.list());
+    if (ports.contains(port)) {
+      return port;
+    }
+    PApplet.println("SerialUtils: No port with this name is present. Available serial ports:");
+    _printSerialPorts();
+    return null;
+  }
+
+  /**
+   * Return the index'th port, if the list of serial ports has at least index
+   * number of ports. Otherwise return null.
+   *
+   * @param index The index of the serial port name to return.
+   *
+   * @return The index'th name for the list of serial ports, if it exists.
+   *         Otherwise return null.
+   */
+  public static String findArduinoPort(int index) {
+    String[] ports = Serial.list();
+    if (0 <= index && index < ports.length) {
+      return ports[index];
+    }
+    PApplet.println("SerialUtils: No port with this index is present. Available serial ports:");
+    _printSerialPorts();
+    return null;
+  }
+
+  public static void _printSerialPorts() {
+    PApplet.println("Available serial ports:");
+    PApplet.printArray(Serial.list());
+    String url = "https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port";
+    PApplet.println("See " + url + " for information on how to identify the appropriate serial port.");
   }
 }
