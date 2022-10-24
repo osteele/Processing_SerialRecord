@@ -1,6 +1,5 @@
 package osteele.processing.SerialRecord;
 
-import java.util.*;
 import processing.core.*;
 import processing.serial.*;
 
@@ -28,7 +27,7 @@ public class SerialRecord {
    */
   public SerialRecord(PApplet app, Serial port, int size) {
     this.app = app;
-    this.portConnection = PortConnection.get(app, port);
+    this.portConnection = SerialPortConnection.get(app, port);
     this.serialPort = port;
     this.size = size;
     this.values = new int[size];
@@ -158,7 +157,7 @@ public class SerialRecord {
   static private String libraryName = "SerialRecord"; // used in error reporting
   private PApplet app;
   private String pTxLine;
-  private PortConnection portConnection;
+  private SerialPortConnection portConnection;
   private int pPeriodicEchoRequestTime = 0;
   private boolean mLog = false;
 
@@ -200,79 +199,5 @@ public class SerialRecord {
         break;
       }
     }
-  }
-}
-
-/**
- * Mediates the connection between multiple SerialRecords connected to the same
- * port, so that the last received line of text can be tracked on a per-port
- * instead of per-SerialRecord basis.
- */
-class PortConnection {
-  private static Map<Serial, PortConnection> portMap = new HashMap<Serial, PortConnection>();
-
-  /**
-   * Get the instance for the specified port. Create a new instance if none
-   * exists.
-   */
-  static PortConnection get(PApplet app, Serial serial) {
-    PortConnection connection = portMap.get(serial);
-    if (connection == null) {
-      connection = new PortConnection(app, serial);
-      portMap.put(serial, connection);
-    }
-    return connection;
-  }
-
-  Serial serial;
-  String pRxLine;
-  int pRxTime;
-
-  private PApplet app;
-  private String unprocessedRxLine;
-  private boolean firstLine = true;
-
-  public PortConnection(PApplet app, Serial serial) {
-    this.app = app;
-    this.serial = serial;
-  }
-
-  /**
-   * If data is available on the serial port, synchronously read a line from
-   * the serial port and store the values in the current record.
-   */
-  public String peek(boolean log) {
-    if (unprocessedRxLine != null) {
-      return unprocessedRxLine;
-    }
-    while (serial.available() > 0) {
-      String line = serial.readStringUntil('\n');
-      if (line != null) {
-        pRxTime = this.app.millis();
-        line = Utils.trimRight(line);
-        while (!line.isEmpty()
-            && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
-          line = line.substring(0, line.length() - 1);
-        }
-        if (!firstLine) {
-          if (log) {
-            PApplet.println("Rx: " + line);
-          }
-          unprocessedRxLine = line;
-          return line;
-        }
-        firstLine = false;
-      }
-    }
-    return null;
-  }
-
-  public String read(boolean log) {
-    String line = peek(log);
-    if (line != null) {
-      pRxLine = line;
-      unprocessedRxLine = null;
-    }
-    return line;
   }
 }
