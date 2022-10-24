@@ -20,9 +20,9 @@ done
 
 name=$(xml2 < pom.xml | grep -oP '^/project/artifactId=\K.+')
 pom_version=$(xml2 < pom.xml | grep -oP '^/project/version=\K.+')
-project_version=$(grep -oP '^prettyVersion=\K.+' library.properties)
+project_version=$(grep -oP '^prettyVersion = \K.+' library.properties)
 
-# TODO DRY release.sh
+# TODO DRY github-release.sh
 # print an error and exit if the project version and pom version differ
 if [ "$pom_version" != "$project_version" ]; then
     echo "Project version ($project_version) does not match pom version ($pom_version)" >&2
