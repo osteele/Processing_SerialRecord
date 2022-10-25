@@ -2,6 +2,9 @@
  *
  * Maps the horizontal and vertical position of the mouse on the canvas to
  * the range 0…1023, and sends them to the serial port.
+ *
+ * Click the canvas to request the Arduino to send back the last record that
+ * it received.
  */
 
 import processing.serial.*;
@@ -15,9 +18,6 @@ void setup() {
 
   String serialPortName = SerialUtils.findArduinoPort();
   serialPort = new Serial(this, serialPortName, 9600);
-  // In order to send a different number of values, modify the number `2` on the
-  // next line to the number values to send. The corresponding number in the
-  // Arduino sketch should be modified as well.
   serialRecord = new SerialRecord(this, serialPort, 2);
 }
 
