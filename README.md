@@ -44,20 +44,32 @@ not require it.
 ## Features
 
 - Parses sequences of integers separated by comma (CSV), tab (TSV), or space.
-- Can be configured to display the most recent sent and received data on the
-  canvas (see the screenshot above).
-- Can be configured to log send and receive data to the console.
-- Received records that have too few or too many values result in a warning in
-  the console. This can help detect issues such a mismatch between the number of
-  values that the Arduino sketch sends, and the number that the Processing
-  sketch expects to receive.
+- Displays the most recent transmitted and received data on the canvas, as in
+  the screenshot above. ([See how to disable
+  this.](https://github.com/osteele/Processing_SerialRecord/wiki/Logging-Transmitted-and-Received-Data#controlling-the-display-of-transmitted-data-on-the-canvas).)
+- Can be configured to log transmitted and receive data to the console. ([See
+  how to enable
+  this.](https://github.com/osteele/Processing_SerialRecord/wiki/Logging-Transmitted-and-Received-Data#logging-transmitted-data-to-the-console).)
+- Received records that have too few or too many values result in the display of
+  a warning message on the console. This can help detect issues such a mismatch
+  between the number of values that the Arduino sketch sends, and the number
+  that the Processing sketch expects to receive.
 - When used with the [SerialRecord library for Arduino] library, sending a
   different number of values than the code running on the Arduino expects,
   results in a warning in the Processing console. This can help detect issues
   such a mismatch between the number of values that the Processing sketch sends,
-  and the number that the Arduino expects to receive.
+  and the number that the Arduino expects to receive. (See [how this works, and
+  how to make use of it in your own
+  code](https://github.com/osteele/Processing_SerialRecord/wiki/Logging-Transmitted-and-Received-Data#what-is-logged).)
 - Recognizes field names in records, e.g. `pot1:100,pot2:200`. This is the
   format recognized by the Arduino Serial Plotter.
+- Provides a [utility
+  method](https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port)
+  that can in some circumstances (usually, on macOS) discover the name of the
+  port that is used to communicate with the Arduino. This prevents someone
+  running a sketch on a different computer than it was developed on, or when the
+  Arduino is connected to a different USB port, from having to modify the source
+  code to their sketches.
 - When used with the [SerialRecord library for Arduino] library, a command can
   be used to request that the Arduino send back the values that it received, for
   debugging. This can be done once, or at periodic intervals.
@@ -89,16 +101,19 @@ number of values), or as a starting point for your own work.
 
 ![](docs/processing-examples.png)
 
+
 You may also review the examples [on
 GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
 
-The examples use the [`SerialUtils.findArduinoPort()`][findArduinoPort] to discover which serial port is connected to the Arduino. If an Arduino is connected to the computer, and this function is unable to discover it, the console at the bottom of the Processing sketch window will print a list of serial ports, ending with by the text:
+If the examples don't run, see whether the behavior that you see matches one of
+the symptoms on the [Troubleshooting
+page](https://github.com/osteele/Processing_SerialRecord/wiki/Troubleshooting).
 
-> `See https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port for information on how to identify the appropriate serial port.`
+## Troubleshooting
 
-If this occurs, follow the link in that message,
-<https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port>,
-for instructions as to how to modify the sketch.
+Some common problems and their solutions are described in the symptoms in
+[Troubleshooting](https://github.com/osteele/Processing_SerialRecord/wiki/Troubleshooting).
+
 
 ## Code Recipes
 
