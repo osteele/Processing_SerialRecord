@@ -51,11 +51,6 @@ class SerialPortConnection {
     this.logToCanvas = flag;
   }
 
-  public void log(boolean logToConsole, boolean logToCanvas) {
-    this.logToConsole = logToConsole;
-    this.logToCanvas = logToCanvas;
-  }
-
   /**
    * If data is available on the serial port, synchronously read a line from
    * the serial port and store the values in the current record.
@@ -121,13 +116,14 @@ class SerialPortConnection {
   //
   // Delegate to PeriodicEcho
   //
+
   private final PeriodicEchoScheduler periodicEcho;
 
-  public void periodicEchoRequest(int interval) {
+  void periodicEchoRequest(int interval) {
     periodicEcho.interval = interval;
   }
 
-  public void requestEcho() {
+  void requestEcho() {
     serial.write("!e\n");
   }
 }

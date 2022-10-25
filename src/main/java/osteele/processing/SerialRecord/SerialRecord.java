@@ -58,6 +58,8 @@ public class SerialRecord {
     return values[0];
   }
 
+  // #region logging
+
   /**
    * Set to true to print transmited and received lines to the console and to
    * the canvas.
@@ -66,7 +68,8 @@ public class SerialRecord {
    * @param logToCanvas  Display Tx and Rx on the canvas if true.
    */
   public void log(boolean logToConsole, boolean logToCanvas) {
-    portConnection.log(logToConsole, logToCanvas);
+    portConnection.logToConsole(logToConsole);
+    portConnection.logToCanvas(logToCanvas);
   }
 
   /**
@@ -116,11 +119,36 @@ public class SerialRecord {
   public void logToConsole() {
     logToConsole(true);
   }
+  // #endregion
 
-  /** Send the values in the urrent record to the serial port. */
+  // #region send-and-receive
+
+  /**
+   * Send the values in the urrent record to the serial port.
+   */
   public void send() {
     String record = Utils.stringInterpolate(values, ",");
     portConnection.writeln(record);
+  }
+
+  /**
+   * Send the values in the urrent record to the serial port.
+   *
+   * This method is a synonym for `send()`.
+   */
+  public void write() {
+    send();
+  }
+
+  /**
+   * If data is available on the serial port, synchronously read a line from the
+   * serial port and store the values in the current record. A synonym for
+   * readIfAvailable().
+   *
+   * @return true if data was available and read.
+   */
+  public boolean receive() {
+    return receiveIfAvailable();
   }
 
   /**
@@ -148,6 +176,7 @@ public class SerialRecord {
   public boolean read() {
     return receiveIfAvailable();
   }
+  // #endregion
 
   /**
    * Display the most-recently transmitted (TX) and received (RX) values on the
@@ -157,7 +186,7 @@ public class SerialRecord {
    * @param y the y-coordinate of the upper-left corner of the display area
    */
   public void draw(float x, float y) {
-    this.portConnection.drawTxRx(x, y);
+    portConnection.drawTxRx(x, y);
   }
 
   /**
@@ -165,7 +194,7 @@ public class SerialRecord {
    * lower left corner of the canvas.
    */
   public void draw() {
-    this.portConnection.drawTxRx();
+    portConnection.drawTxRx();
   }
 
   /**
@@ -183,9 +212,10 @@ public class SerialRecord {
    * has received.
    */
   public void requestEcho() {
-    serialPort.write("!e\n");
+    portConnection.requestEcho();
   }
 
+  // #region private
   static private String libraryName = "SerialRecord"; // used in error reporting
   private SerialPortConnection portConnection;
 
@@ -228,4 +258,5 @@ public class SerialRecord {
       }
     }
   }
+  // #endregion
 }
