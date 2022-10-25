@@ -6,7 +6,7 @@
   <groupId>com.osteele</groupId>
   <artifactId>SerialRecord</artifactId>
   <packaging>jar</packaging>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
 
   <name>serialrecord</name>
   <url>http://github.com/osteele/SerialRecord</url>
