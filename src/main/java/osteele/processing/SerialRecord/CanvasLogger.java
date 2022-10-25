@@ -29,20 +29,21 @@ public class CanvasLogger {
     if (pRxLine == null) {
       pRxLine = portConnection.pRxLine;
     }
+    app.resetMatrix();
     if (pTxLine != null) {
-      this.app.text("TX: " + pTxLine, x, y);
+      app.text("TX: " + pTxLine, x, y);
     }
     if (pRxLine == null || !pRxLine.isEmpty()) {
-      y += this.app.textAscent() + this.app.textDescent();
+      y += app.textAscent() + app.textDescent();
       String message = "Click to request an echo from the Arduino";
       if (pRxLine != null) {
         message = pRxLine;
-        int age = this.app.millis() - portConnection.pRxTime;
+        int age = app.millis() - portConnection.pRxTime;
         if (age >= 1000) {
           message += String.format(" (%s ago)", Utils.humanTime(age));
         }
       }
-      this.app.text("RX: " + message, x, y);
+      app.text("RX: " + message, x, y);
     }
   }
 
