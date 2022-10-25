@@ -14,10 +14,6 @@ void setup() {
   size(500, 500);
 
   String serialPortName = SerialUtils.findArduinoPort();
-  if (serialPortName == null) {
-    exit();
-    return;
-  }
   serialPort = new Serial(this, serialPortName, 9600);
   serialRecord = new SerialRecord(this, serialPort, 1);
 }

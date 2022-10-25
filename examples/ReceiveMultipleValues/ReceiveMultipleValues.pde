@@ -14,11 +14,8 @@ void setup() {
   size(500, 500);
 
   String serialPortName = SerialUtils.findArduinoPort();
-  if (serialPortName == null) {
-    exit();
-    return;
-  }
   serialPort = new Serial(this, serialPortName, 9600);
+
   // If the Arduino sends a different number of values, modify the number `2` on
   // the next line to match the number of values that it sends.
   serialRecord = new SerialRecord(this, serialPort, 2);
