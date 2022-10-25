@@ -86,34 +86,29 @@ Use Processing's *Contribution Manager* to install this library:
 
 ![](docs/processing-library-manager.png)
 
-Note: Remember to make a copy of an example before you modify it. The Processing
-IDE (unlike the Arduino IDE) will not do this for you.
-
 ## Examples
 
-Once you install the library, examples are available from the *File > Examples*
-menu.
+Once the library has been installed, examples are available from the *File >
+Examples* menu.
+
+![](docs/processing-examples.png)
 
 Each example is designed to pair with an example in the [SerialRecord library
 for Arduino] library. However, the examples can also be used with other Arduino
 sketches (so long as those sketches are written to send or receive to expected
 number of values), or as a starting point for your own work.
 
-![](docs/processing-examples.png)
-
-
-You may also review the examples [on
-GitHub](https://github.com/osteele/Processing_SerialRecord/tree/main/examples).
-
-If the examples don't run, see whether the behavior that you see matches one of
-the symptoms on the [Troubleshooting
-page](https://github.com/osteele/Processing_SerialRecord/wiki/Troubleshooting).
+The [Examples wiki
+page](https://github.com/osteele/Processing_SerialRecord/wiki/Examples)
+describes the examples, and suggests which example from the [SerialRecord
+library for Arduino] is intended for use with each Processing example. (For
+example, the Processing `SendSingleValue` sketch was designed to pair with the
+Arduino `ReceiveSingleValue` sketch.)
 
 ## Troubleshooting
 
 Some common problems and their solutions are described in the symptoms in
 [Troubleshooting](https://github.com/osteele/Processing_SerialRecord/wiki/Troubleshooting).
-
 
 ## Code Recipes
 
