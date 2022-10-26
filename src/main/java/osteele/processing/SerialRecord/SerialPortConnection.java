@@ -32,7 +32,6 @@ class SerialPortConnection {
 
   private final PApplet app;
   private String unprocessedRxLine;
-  private boolean firstLine = true;
   private boolean logToConsole = false;
   boolean logToCanvas = true;
 
@@ -68,14 +67,11 @@ class SerialPortConnection {
             && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
           line = line.substring(0, line.length() - 1);
         }
-        if (!firstLine) {
-          if (logToConsole) {
-            PApplet.println("Rx: " + line);
-          }
-          unprocessedRxLine = line;
-          return line;
+        if (logToConsole) {
+          PApplet.println("Rx: " + line);
         }
-        firstLine = false;
+        unprocessedRxLine = line;
+        return line;
       }
     }
     return null;

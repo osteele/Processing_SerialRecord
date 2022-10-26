@@ -34,6 +34,8 @@ public class SerialRecord {
    */
   public String fieldNames[];
 
+  private boolean isFirstLine = true;
+
   /**
    * Constructor.
    *
@@ -224,6 +226,8 @@ public class SerialRecord {
   }
 
   private void processReceivedLine(String line) {
+    boolean isFirstLine = this.isFirstLine;
+    this.isFirstLine = false;
     if (line.isEmpty()) {
       return;
     }
@@ -234,7 +238,9 @@ public class SerialRecord {
     if (fields.length != size) {
       String message = String.format("Expected %d value(s), but received %d value(s)",
           size, fields.length);
-      showWarning(message);
+      if (!isFirstLine) {
+        showWarning(message);
+      }
     }
     // Go ahead and read as many fields as fit into the record, even if the
     // number of fields is different from the specified record size. This
@@ -252,8 +258,10 @@ public class SerialRecord {
       try {
         this.values[i] = Integer.parseInt(field);
       } catch (NumberFormatException e) {
-        showWarning("Received line contains an invalid value: " +
-            field);
+        if (!isFirstLine) {
+          showWarning("Received line contains an invalid value: " +
+              field);
+        }
         break;
       }
     }
