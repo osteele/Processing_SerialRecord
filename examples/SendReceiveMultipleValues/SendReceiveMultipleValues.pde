@@ -29,8 +29,8 @@ void setup() {
   // Arduino sketch should be modified as well.
   sender = new SerialRecord(this, serialPort, 2);
 
-  // If the Arduino sends a different number of values, modify the number `3` on
-  // the next line to match the number of values that it sends.
+  // If the Arduino sketch sends a different number of values, modify the number
+  // `3` on the next line to match the number of values that it sends.
   receiver = new SerialRecord(this, serialPort, 3);
 }
 

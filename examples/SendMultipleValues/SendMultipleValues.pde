@@ -15,9 +15,10 @@ void setup() {
 
   String serialPortName = SerialUtils.findArduinoPort();
   serialPort = new Serial(this, serialPortName, 9600);
+
   // In order to send a different number of values, modify the number `2` on the
-  // next line to the number values to send. The corresponding number in the
-  // Arduino sketch should be modified as well.
+  // next line to the number values to send. In this case, the corresponding
+  // number in the Arduino sketch should be modified as well.
   serialRecord = new SerialRecord(this, serialPort, 2);
 }
 
@@ -29,8 +30,4 @@ void draw() {
   serialRecord.values[0] = int(map(mouseX, 0, width - 1, 0, 1023));
   serialRecord.values[1] = int(map(mouseY, 0, height - 1, 0, 1023));
   serialRecord.send();
-}
-
-void mouseClicked() {
-  serialRecord.requestEcho();
 }

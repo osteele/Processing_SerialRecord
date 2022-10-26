@@ -29,13 +29,12 @@ public class CanvasLogger {
     if (pRxLine == null) {
       pRxLine = portConnection.pRxLine;
     }
-    app.resetMatrix();
     if (pTxLine != null) {
       app.text("TX: " + pTxLine, x, y);
     }
     if (pRxLine == null || !pRxLine.isEmpty()) {
       y += app.textAscent() + app.textDescent();
-      String message = "Click to request an echo from the Arduino";
+      String message = "---";
       if (pRxLine != null) {
         message = pRxLine;
         int age = app.millis() - portConnection.pRxTime;
@@ -58,6 +57,9 @@ public class CanvasLogger {
 
   public void draw() {
     if (portConnection.logToCanvas) {
+      app.resetMatrix();
+      app.textSize(12);
+      app.textAlign(PApplet.LEFT);
       drawTxRx();
     }
   }

@@ -23,6 +23,11 @@ void setup() {
 
 void draw() {
   background(0);
+
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  text("Click to request an echo from the Arduino", 0, 0, width, height);
+
   circle(mouseX, mouseY, 20);
 
   // store some values in serialTransport.values, and send them to the Arduino
