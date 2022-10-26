@@ -16,7 +16,8 @@
     {
       "label": "Build Javadocs",
       "type": "shell",
-      "command": "mvn javadoc:javadoc && open target/reference/apidocs/index.html"
+      "command": "mvn javadoc:javadoc && open target/reference/apidocs/index.html",
+      "problemMatcher": []
     },
     {
       "label": "Publish",
