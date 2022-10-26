@@ -59,7 +59,7 @@ public interface SerialUtils {
       }
     }
     PApplet.println("SerialUtils: Couldn't determine which serial port is connected to the Arduino.");
-    _printSerialPorts();
+    SerialUtilsPrivate.printSerialPorts();
     return null;
   }
 
@@ -78,7 +78,7 @@ public interface SerialUtils {
       return port;
     }
     PApplet.println("SerialUtils: No port with this name is present. Available serial ports:");
-    _printSerialPorts();
+    SerialUtilsPrivate.printSerialPorts();
     return null;
   }
 
@@ -97,12 +97,13 @@ public interface SerialUtils {
       return ports[index];
     }
     PApplet.println("SerialUtils: No port with this index is present. Available serial ports:");
-    _printSerialPorts();
+    SerialUtilsPrivate.printSerialPorts();
     return null;
   }
+}
 
-  /** This method is not intended to be used publically. */
-  public static void _printSerialPorts() {
+interface SerialUtilsPrivate {
+  public static void printSerialPorts() {
     PApplet.println("Available serial ports:");
     PApplet.printArray(Serial.list());
     String url = "https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port";

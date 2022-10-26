@@ -1,5 +1,9 @@
 package osteele.processing.SerialRecord;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.LinkedList;
+
 import processing.core.*;
 import processing.serial.*;
 
@@ -34,6 +38,8 @@ public class SerialRecord {
    */
   public String fieldNames[];
 
+  private final PApplet app;
+  private final List<String> fieldNameList;
   private boolean isFirstLine = true;
 
   /**
@@ -44,11 +50,14 @@ public class SerialRecord {
    * @param size the number of values
    */
   public SerialRecord(PApplet app, Serial port, int size) {
-    this.portConnection = SerialPortConnection.get(app, port);
+    this.app = app;
     this.serialPort = port;
     this.size = size;
     this.values = new int[size];
     this.fieldNames = new String[size];
+
+    this.portConnection = SerialPortConnection.get(app, port);
+    this.fieldNameList = Arrays.asList(fieldNames);
   }
 
   /**
@@ -58,6 +67,52 @@ public class SerialRecord {
    */
   public int get() {
     return values[0];
+  }
+
+  /**
+   * Return the nth value in the array.
+   *
+   * @return the first value
+   */
+  public int get(int index) {
+    return values[index];
+  }
+
+  /**
+   * Return serial record value, indexed by its field name.
+   *
+   * @param fieldName the name of the field
+   * @return the first value
+   */
+  public int get(String fieldName) {
+    int index = fieldNameList.indexOf(fieldName);
+    if (index < 0) {
+      List<String> nonNullNames = new LinkedList<>(fieldNameList);
+      nonNullNames.removeIf(any -> {
+        return any == null;
+      });
+      if (nonNullNames.isEmpty()) {
+        throw new RuntimeException("Error: No field names are present");
+      } else {
+        throw new RuntimeException(String.format(
+            "Error: Field name \"%s\" is not present in %s",
+            fieldName, nonNullNames));
+      }
+    }
+    return values[index];
+  }
+
+  /**
+   * Return serial record value, indexed by its field name.
+   *
+   * @param fieldName    the name of the field
+   * @param defaultValue the value to return if fieldName does not occur in
+   *                     the record
+   * @return the first value
+   */
+  public int get(String fieldName, int defaultValue) {
+    int index = fieldNameList.indexOf(fieldName);
+    return index < 0 ? defaultValue : get(fieldName);
   }
 
   // #region logging
@@ -218,7 +273,8 @@ public class SerialRecord {
   }
 
   // #region private
-  static private String libraryName = "SerialRecord"; // used in error reporting
+  private static final String libraryName = "SerialRecord"; // used in error reporting
+  private static final String fieldSeparators = "[,; \t]";
   private SerialPortConnection portConnection;
 
   private void showWarning(String message) {
@@ -226,26 +282,33 @@ public class SerialRecord {
   }
 
   private void processReceivedLine(String line) {
-    boolean isFirstLine = this.isFirstLine;
+    // The first line is generally incomplete. It may contain only the end of a
+    // record; but also, the prefix may include a random sample of characters
+    // from previous lines. Process this line, but don't report errros. If there
+    // is a program error, they will almost certainly show up in subsequent
+    // lines as well.
+    boolean reportInputErrors = !this.isFirstLine && app.millis() < 1000;
     this.isFirstLine = false;
+
     if (line.isEmpty()) {
       return;
     }
     if (line.startsWith("Warning:") || line.startsWith("Error:")) {
       PGraphics.showWarning("SerialRecord@Arduino: " + line);
+      return;
     }
-    String[] fields = line.split("[,; \t]");
+    String[] fields = line.split(fieldSeparators);
     if (fields.length != size) {
       String message = String.format("Expected %d value(s), but received %d value(s)",
           size, fields.length);
-      if (!isFirstLine) {
+      if (reportInputErrors) {
         showWarning(message);
       }
     }
     // Go ahead and read as many fields as fit into the record, even if the
     // number of fields is different from the specified record size. This
-    // simplifies incremental development: the user may not need to re-flash the
-    // Arduino quite as much.
+    // simplifies incremental development: the user not need re-flash the
+    // Arduino quite as frequently.
     int n = Math.min(fields.length, size);
     for (int i = 0; i < n; i++) {
       String field = fields[i];
@@ -258,7 +321,7 @@ public class SerialRecord {
       try {
         this.values[i] = Integer.parseInt(field);
       } catch (NumberFormatException e) {
-        if (!isFirstLine) {
+        if (reportInputErrors) {
           showWarning("Received line contains an invalid value: " +
               field);
         }
