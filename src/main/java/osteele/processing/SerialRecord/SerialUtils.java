@@ -8,7 +8,10 @@ import processing.core.*;
 import processing.serial.*;
 
 /** Utility functions that make it easier to use the serial port. */
-public interface SerialUtils {
+public abstract class SerialUtils {
+  SerialUtils() {
+  }
+
   /**
    * Find the serial port that, based on its name, is probably connected to an
    * Arduino.
@@ -59,7 +62,7 @@ public interface SerialUtils {
       }
     }
     PApplet.println("SerialUtils: Couldn't determine which serial port is connected to the Arduino.");
-    SerialUtilsPrivate.printSerialPorts();
+    printSerialPorts();
     return null;
   }
 
@@ -78,7 +81,7 @@ public interface SerialUtils {
       return port;
     }
     PApplet.println("SerialUtils: No port with this name is present. Available serial ports:");
-    SerialUtilsPrivate.printSerialPorts();
+    printSerialPorts();
     return null;
   }
 
@@ -97,13 +100,11 @@ public interface SerialUtils {
       return ports[index];
     }
     PApplet.println("SerialUtils: No port with this index is present. Available serial ports:");
-    SerialUtilsPrivate.printSerialPorts();
+    printSerialPorts();
     return null;
   }
-}
 
-interface SerialUtilsPrivate {
-  public static void printSerialPorts() {
+  private static void printSerialPorts() {
     PApplet.println("Available serial ports:");
     PApplet.printArray(Serial.list());
     String url = "https://github.com/osteele/Processing_SerialRecord/wiki/Find-the-Arduino-Serial-Port";
