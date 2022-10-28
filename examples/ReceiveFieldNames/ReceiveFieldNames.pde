@@ -14,7 +14,6 @@
 
 import processing.serial.*;
 import osteele.processing.SerialRecord.*;
-import static osteele.processing.SerialUtils;
 import java.util.Arrays;
 
 Serial serialPort;
