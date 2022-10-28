@@ -14,6 +14,7 @@
 
 import processing.serial.*;
 import osteele.processing.SerialRecord.*;
+import static osteele.processing.SerialUtils;
 import java.util.Arrays;
 
 Serial serialPort;
@@ -31,10 +32,10 @@ void draw() {
   background(0);
 
   serialRecord.read();
-    int value1 = serialRecord.get("millis", -1);
-    int value2 = serialRecord.get("analog", -1);
+  int value1 = serialRecord.get("millis", -1);
+  int value2 = serialRecord.get("analog", -1);
 
-    float x = map(value1, 0, 1024, 0, width);
-    float y = map(value2, 0, 1024, 0, height);
-    circle(x, y, 20);
+  float x = map(value1, 0, 1024, 0, width);
+  float y = map(value2, 0, 1024, 0, height);
+  circle(x, y, 20);
 }

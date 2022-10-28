@@ -14,13 +14,13 @@ import processing.serial.*;
  */
 public class SerialRecord {
   /** The serial port that this SerialRecord uses for sending or receiving. */
-  public final Serial serialPort;
+  public final Serial serial;
 
   /**
    * The number of values that this record was initialized to.
    * This is also the size of the `values` array.
    */
-  public final int size;
+  public int size;
 
   /**
    * The array of values. For a record that is used to send values, values are
@@ -38,26 +38,44 @@ public class SerialRecord {
    */
   public String fieldNames[];
 
+  /**
+   * The time in millis() when the record was received.
+   */
+  public int sampleTime;
+
   private final PApplet app;
-  private final List<String> fieldNameList;
+  private List<String> fieldNameList;
   private boolean isFirstLine = true;
+  private boolean isResizeable;
 
   /**
-   * Constructor.
+   * Constructor. Construct a serial record that expects
+   * `size` number of values.
    *
-   * @param app  the PApplet (generally this)
-   * @param port the serial port
-   * @param size the number of values
+   * @param app    the PApplet (generally this)
+   * @param serial the serial port
+   * @param size   the number of values
    */
-  public SerialRecord(PApplet app, Serial port, int size) {
+  public SerialRecord(PApplet app, Serial serial, int size) {
     this.app = app;
-    this.serialPort = port;
+    this.serial = serial;
     this.size = size;
+
     this.values = new int[size];
     this.fieldNames = new String[size];
-
-    this.portConnection = SerialPortConnection.get(app, port);
     this.fieldNameList = Arrays.asList(fieldNames);
+    this.isResizeable = size == 0;
+    this.portConnection = SerialPortConnection.get(app, serial);
+  }
+
+  /**
+   * Constructor. Construct a serial record that receives any number of values.
+   *
+   * @param app    the PApplet (generally this)
+   * @param serial the serial port
+   */
+  public SerialRecord(PApplet app, Serial serial) {
+    this(app, serial, 0);
   }
 
   /**
@@ -297,13 +315,20 @@ public class SerialRecord {
       PGraphics.showWarning("SerialRecord@Arduino: " + line);
       return;
     }
+    this.sampleTime = app.millis();
     String[] fields = line.split(fieldSeparators);
-    if (fields.length != size) {
-      String message = String.format("Expected %d value(s), but received %d value(s)",
-          size, fields.length);
+    if (fields.length != size && !isResizeable) {
       if (reportInputErrors) {
+        String message = String.format("Expected %d value(s), but received %d value(s)",
+            size, fields.length);
         showWarning(message);
       }
+    }
+    if (fields.length != size && isResizeable) {
+      this.size = fields.length;
+      this.values = new int[size];
+      this.fieldNames = new String[size];
+      this.fieldNameList = Arrays.asList(fieldNames);
     }
     // Go ahead and read as many fields as fit into the record, even if the
     // number of fields is different from the specified record size. This
@@ -319,7 +344,7 @@ public class SerialRecord {
         field = split[1];
       }
       try {
-        this.values[i] = Integer.parseInt(field);
+        values[i] = Integer.parseInt(field);
       } catch (NumberFormatException e) {
         if (reportInputErrors) {
           showWarning("Received line contains an invalid value: " +
