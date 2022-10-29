@@ -199,20 +199,38 @@ public class SerialRecord {
   // #region send-and-receive
 
   /**
-   * Send the values in the urrent record to the serial port.
+   * Send the values in the current record to the serial port.
    */
   public void send() {
+    send(values);
+  }
+
+  /**
+   * Send the values in the array to the serial port.
+   *
+   * @param values An array of values to send.
+   */
+  public void send(int values[]) {
     String record = Utils.stringInterpolate(values, ",");
     portConnection.writeln(record);
   }
 
   /**
-   * Send the values in the urrent record to the serial port.
+   * Send the values in the current record to the serial port.
    *
    * This method is a synonym for `send()`.
    */
   public void write() {
     send();
+  }
+
+  /**
+   * Send the values in the current record to the serial port.
+   *
+   * This method is a synonym for `send()`.
+   */
+  public void write(int values[]) {
+    send(values);
   }
 
   /**
@@ -223,7 +241,7 @@ public class SerialRecord {
    * @return true if data was available and read.
    */
   public boolean receive() {
-    return receiveIfAvailable();
+    return receiveIfAvailable(values);
   }
 
   /**
@@ -233,9 +251,13 @@ public class SerialRecord {
    * @return true if data was available and read.
    */
   public boolean receiveIfAvailable() {
+    return receiveIfAvailable(values);
+  }
+
+  private boolean receiveIfAvailable(int[] values) {
     String line = portConnection.read();
     if (line != null) {
-      processReceivedLine(line);
+      processReceivedLine(line, values);
       return true;
     }
     return false;
@@ -251,6 +273,38 @@ public class SerialRecord {
   public boolean read() {
     return receiveIfAvailable();
   }
+
+  /**
+   * If data is available on the serial port, synchronously read a line from the
+   * serial port and store the values in the current record. A synonym for
+   * readIfAvailable().
+   *
+   * @return true if data was available and read.
+   */
+  public boolean read(int[] values) {
+    return receiveIfAvailable();
+  }
+  // #endregion
+
+  // #region serial-facade
+  /**
+   * Return the number of bytes available from the underlying serial connection.
+   * The main use of this is to compare this number to 0, to see whether a
+   * call to read() and its synonyms will read a new record.
+   *
+   * @return The number of bytes available to read.
+   */
+  public int available() {
+    return portConnection.available();
+  }
+
+  /**
+   * Discard all currently-pending unprocessed incoming serial data.
+   */
+  public void clear() {
+    portConnection.clear();
+  }
+
   // #endregion
 
   /**
@@ -299,7 +353,7 @@ public class SerialRecord {
     PGraphics.showWarning(String.format("%s: %s", libraryName, message));
   }
 
-  private void processReceivedLine(String line) {
+  private void processReceivedLine(String line, int[] values) {
     // The first line is generally incomplete. It may contain only the end of a
     // record; but also, the prefix may include a random sample of characters
     // from previous lines. Process this line, but don't report errros. If there
@@ -315,7 +369,9 @@ public class SerialRecord {
       PGraphics.showWarning("SerialRecord@Arduino: " + line);
       return;
     }
+
     this.sampleTime = app.millis();
+    int size = values.length;
     String[] fields = line.split(fieldSeparators);
     if (fields.length != size && !isResizeable) {
       if (reportInputErrors) {

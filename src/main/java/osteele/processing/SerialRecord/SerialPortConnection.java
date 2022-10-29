@@ -50,6 +50,16 @@ class SerialPortConnection {
     this.logToCanvas = flag;
   }
 
+  public int available() {
+    String line = unprocessedRxLine;
+    return line == null ? serial.available() : line.length();
+  }
+
+  public void clear() {
+    unprocessedRxLine = null;
+    serial.clear();
+  }
+
   /**
    * If data is available on the serial port, synchronously read a line from
    * the serial port and store the values in the current record.
@@ -96,7 +106,7 @@ class SerialPortConnection {
   }
 
   //
-  // Delegate to CanvasLogger
+  // Facade for CanvasLogger
   //
 
   private final CanvasLogger canvasLogger;
@@ -110,7 +120,7 @@ class SerialPortConnection {
   }
 
   //
-  // Delegate to PeriodicEcho
+  // Facade for PeriodicEcho
   //
 
   private final PeriodicEchoScheduler periodicEcho;
