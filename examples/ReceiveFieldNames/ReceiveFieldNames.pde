@@ -1,15 +1,16 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Receives two integers from the serial port, and uses them to control
- * the x and y position of a circle on the canvas.
+ * Receives two integers from the serial port, and uses them to control the x
+ * and y position of a circle on the canvas.
  *
- * The values are retrieved by field name, rather than position. The
- * sender is expected to send records of the form "millis:100,analog:200".
+ * The values are retrieved by field name, rather than position. The sender is
+ * expected to send records of the form "millis:100,analog:200".
  *
- * This choice of field names is designed to match SendFieldNames example
- * in SerialRecord for Arduino. A more sane choice of field names might be
- * "A0" and "A1" to reflect a different pair of Arduino sources for the values,
- * "x" and "y" to reflect the Processing sketch's use of them.
+ * This choice of field names is designed to match SendFieldNames example in
+ * SerialRecord for Arduino. A more sane choice of field names might be "A0" and
+ * "A1" to reflect a different pair of Arduino sources for the values, "x" and
+ * "y" to reflect the Processing sketch's use of them.
  */
 
 import processing.serial.*;

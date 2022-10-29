@@ -1,7 +1,8 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Maps the horizontal and vertical position of the mouse on the canvas to
- * the range 0…1023, and sends them to the serial port.
+ * Maps the horizontal and vertical position of the mouse on the canvas to the
+ * range 0…1023, and sends them to the serial port.
  */
 
 import processing.serial.*;

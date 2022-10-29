@@ -1,4 +1,5 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
  * Send a zero or 1 the serial port, depending on whether the mouse is on the
  * left or right half of the canvas.
@@ -10,7 +11,7 @@
  * function instead of this library.
  *
  * The only advantage of the approach in this sketch is that it is simple to
- * modify it to transmit a second value, SendMultipleValues demonstrates.
+ * modify it to transmit a second value, as SendMultipleValues demonstrates.
  */
 
 import processing.serial.*;

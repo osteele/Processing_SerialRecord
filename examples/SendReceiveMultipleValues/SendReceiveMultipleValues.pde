@@ -1,11 +1,12 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Sends the x and y position of the mouse on the canvas to
- * the serial port. Reads values back from the serial port, and draws
- * another circle at that position.
+ * Sends the x and y position of the mouse on the canvas to the serial port.
+ * Reads values back from the serial port, and draws another circle at that
+ * position.
  *
- * Click the canvas to request the Arduino to send back the last record that
- * it received.
+ * Click the canvas to request the Arduino to send back the last record that it
+ * received.
  *
  * Uncomment the line that contains `periodicEchoRequest` to do this
  * automatically.

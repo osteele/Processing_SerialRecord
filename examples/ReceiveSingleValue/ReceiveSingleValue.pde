@@ -1,7 +1,8 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Receives an integer from the serial port, and uses it to control
- * the horizontal positon of a line on the canvas.
+ * Receives an integer from the serial port, and uses it to control the
+ * horizontal positon of a line on the canvas.
  *
  * This sketch has the same effect as calling `serialPort.read(0)`.
  *

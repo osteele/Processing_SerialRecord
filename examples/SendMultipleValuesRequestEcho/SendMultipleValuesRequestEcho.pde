@@ -1,10 +1,11 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Maps the horizontal and vertical position of the mouse on the canvas to
- * the range 0…1023, and sends them to the serial port.
+ * Maps the horizontal and vertical position of the mouse on the canvas to the
+ * range 0…1023, and sends them to the serial port.
  *
- * Click the canvas to request the Arduino to send back the last record that
- * it received.
+ * Click the canvas to request the Arduino to send back the last record that it
+ * received.
  */
 
 import processing.serial.*;

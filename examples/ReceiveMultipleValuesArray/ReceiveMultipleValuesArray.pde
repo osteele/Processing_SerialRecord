@@ -1,7 +1,8 @@
-/* Example sketch for the SerialRecord library for Processing.
+/**
+ * Example sketch for the SerialRecord library for Processing.
  *
- * Receives two integers from the serial port, and uses them to control
- * the x and y position of a circle on the canvas.
+ * Receives two integers from the serial port, and uses them to control the x
+ * and y position of a circle on the canvas.
  */
 
 import processing.serial.*;
