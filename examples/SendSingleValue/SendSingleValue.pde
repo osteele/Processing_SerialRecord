@@ -2,6 +2,15 @@
  *
  * Send a zero or 1 the serial port, depending on whether the mouse is on the
  * left or right half of the canvas.
+ *
+ * This sketch has the same effect as calling `serialPort.println(0)` and
+ * `serialPort.println(1)`.
+ *
+ * If your sketch needs to send only a single value, consider using that
+ * function instead of this library.
+ *
+ * The only advantage of the approach in this sketch is that it is simple to
+ * modify it to transmit a second value, SendMultipleValues demonstrates.
  */
 
 import processing.serial.*;

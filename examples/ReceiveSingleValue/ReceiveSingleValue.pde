@@ -2,6 +2,14 @@
  *
  * Receives an integer from the serial port, and uses it to control
  * the horizontal positon of a line on the canvas.
+ *
+ * This sketch has the same effect as calling `serialPort.read(0)`.
+ *
+ * If your sketch needs to receive only a single value, consider using that
+ * function instead of this library.
+ *
+ * The only advantage of the approach in this sketch is that it is simple to
+ * modify it to receive a second value, as ReceiveMultipleValues demonstrates.
  */
 
 import processing.serial.*;
