@@ -52,9 +52,4 @@ void draw() {
   // draw a red circle at the received position
   fill(255, 0, 0);
   circle(receiver.values[0], receiver.values[1], 20);
-
-  // The following line is necessary so that the code in SerialRecord that draws
-  // the last transmitted and received lines, will draw the in white, so that it
-  // is visible.
-  fill(255);
 }

@@ -13,7 +13,7 @@ SerialRecord serialRecord;
 
 // If the Arduino sketch sends a different number of values, modify the number
 // `2` on the next line to match the number of values that it sends.
-int values[2];
+int[] values = new int[2];
 
 void setup() {
   size(500, 500);
