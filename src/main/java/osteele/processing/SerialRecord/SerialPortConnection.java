@@ -13,8 +13,11 @@ class SerialPortConnection {
   private static Map<Serial, SerialPortConnection> portMap = new HashMap<Serial, SerialPortConnection>();
 
   /**
-   * Get the instance for the specified port. Create a new instance if none
+   * Get the instance for the specified port. Creates a new instance if none
    * exists.
+   *
+   * @return An instance of SerialPortConnection that connects the specified
+   *         port.
    */
   static SerialPortConnection get(PApplet app, Serial serial) {
     SerialPortConnection connection = portMap.get(serial);
@@ -35,11 +38,16 @@ class SerialPortConnection {
   private boolean logToConsole = false;
   boolean logToCanvas = true;
 
-  SerialPortConnection(PApplet app, Serial serial) {
+  // Use the static `get() method instead.
+  private SerialPortConnection(PApplet app, Serial serial) {
     this.app = app;
     this.serial = serial;
     this.canvasLogger = new CanvasLogger(app, this);
     this.periodicEcho = new PeriodicEchoScheduler(app, this);
+  }
+
+  public String toString() {
+    return String.format("SerialPortConnection(\"%s\")", serial.port.getPortName());
   }
 
   public void logToConsole(boolean flag) {

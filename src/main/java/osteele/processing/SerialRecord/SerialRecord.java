@@ -1,8 +1,6 @@
 package osteele.processing.SerialRecord;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
 
 import processing.core.*;
 import processing.serial.*;
@@ -76,6 +74,21 @@ public class SerialRecord {
    */
   public SerialRecord(PApplet app, Serial serial) {
     this(app, serial, 0);
+  }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer("SerialRecord {");
+    for (int i = 0; i < size; i++) {
+      if (i > 0)
+        buffer.append(',');
+      if (fieldNames[i] != null) {
+        buffer.append(fieldNames[i]);
+        buffer.append(':');
+      }
+      buffer.append(Integer.toString(values[i]));
+    }
+    buffer.append("}");
+    return buffer.toString();
   }
 
   /**
@@ -373,19 +386,29 @@ public class SerialRecord {
     this.sampleTime = app.millis();
     int size = values.length;
     String[] fields = line.split(fieldSeparators);
-    if (fields.length != size && !isResizeable) {
-      if (reportInputErrors) {
-        String message = String.format("Expected %d value(s), but received %d value(s)",
+
+    if (fields.length != size) {
+      if (isResizeable) {
+        // Resize the array
+        boolean replaceMember = this.values == values;
+        size = fields.length;
+        values = new int[size];
+        if (replaceMember) {
+          this.size = size;
+          this.values = values;
+        }
+      } else if (reportInputErrors) {
+        String message = String.format(
+            "Expected %d value(s), but received %d value(s)",
             size, fields.length);
         showWarning(message);
       }
     }
-    if (fields.length != size && isResizeable) {
-      this.size = fields.length;
-      this.values = new int[size];
+    if (isResizeable && fieldNames.length != fields.length) {
       this.fieldNames = new String[size];
       this.fieldNameList = Arrays.asList(fieldNames);
     }
+
     // Go ahead and read as many fields as fit into the record, even if the
     // number of fields is different from the specified record size. This
     // simplifies incremental development: the user not need re-flash the
