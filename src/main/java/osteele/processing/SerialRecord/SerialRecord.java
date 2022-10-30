@@ -44,6 +44,8 @@ public class SerialRecord {
   private final PApplet app;
   private List<String> fieldNameList;
   private boolean isFirstLine = true;
+  private int linesReceived = 0;
+  private final int instantiatedAt;
   private boolean isResizeable;
 
   /**
@@ -58,6 +60,7 @@ public class SerialRecord {
     this.app = app;
     this.serial = serial;
     this.size = size;
+    this.instantiatedAt = app.millis();
 
     this.values = new int[size];
     this.fieldNames = new String[size];
@@ -281,6 +284,10 @@ public class SerialRecord {
    * serial port and store the values in the current record. A synonym for
    * readIfAvailable().
    *
+   * The first two lines received on the serial port when a sketch is started
+   * are generally garbled, and are ignored, if they are received within 100 ms
+   * of the instantiation of SerialRecord.
+   *
    * @return true if data was available and read.
    */
   public boolean read() {
@@ -372,6 +379,8 @@ public class SerialRecord {
     // from previous lines. Process this line, but don't report errros. If there
     // is a program error, they will almost certainly show up in subsequent
     // lines as well.
+    if (++linesReceived <= 2 && app.millis() - instantiatedAt < 100)
+      return;
     boolean reportInputErrors = !this.isFirstLine && app.millis() < 1000;
     this.isFirstLine = false;
 
