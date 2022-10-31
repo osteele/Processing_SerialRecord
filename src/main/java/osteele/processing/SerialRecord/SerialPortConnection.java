@@ -29,9 +29,6 @@ class SerialPortConnection {
   }
 
   private final Serial serial;
-  String pTxLine;
-  String pRxLine;
-  int pRxTime;
 
   private final PApplet app;
   private String unprocessedRxLine;
@@ -79,7 +76,7 @@ class SerialPortConnection {
     while (serial.available() > 0) {
       String line = serial.readStringUntil('\n');
       if (line != null) {
-        pRxTime = this.app.millis();
+        canvasLogger.pRxTime = this.app.millis();
         line = Utils.trimRight(line);
         while (!line.isEmpty()
             && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
@@ -98,14 +95,14 @@ class SerialPortConnection {
   String read() {
     String line = peek();
     if (line != null) {
-      pRxLine = line;
+      canvasLogger.pRxLine = line;
       unprocessedRxLine = null;
     }
     return line;
   }
 
   void writeln(String line) {
-    pTxLine = line;
+    canvasLogger.pTxLine = line;
     if (logToConsole) {
       PApplet.println("TX: " + line);
     }

@@ -12,6 +12,10 @@ public class CanvasLogger {
   private final float defaultX = 10;
   private final float defaultY = -1;
 
+  String pRxLine;
+  String pTxLine;
+  int pRxTime;
+
   CanvasLogger(PApplet app, SerialPortConnection portConnection) {
     this.app = app;
     this.portConnection = portConnection;
@@ -19,16 +23,11 @@ public class CanvasLogger {
   }
 
   void drawTxRx(float x, float y, boolean eraseBackground) {
-    String pRxLine = portConnection.read();
-    String pTxLine = portConnection.pTxLine;
-    if (pRxLine == null) {
-      pRxLine = portConnection.pRxLine;
-    }
     String txMessage = pTxLine == null ? null : "TX: " + pTxLine;
     String rxMessage = null;
     if (pRxLine != null && !pRxLine.isEmpty()) {
       rxMessage = "RX: " + pRxLine;
-      int age = app.millis() - portConnection.pRxTime;
+      int age = app.millis() - pRxTime;
       if (age >= 1000) {
         rxMessage += String.format(" (%s ago)", Utils.humanTime(age));
       }
