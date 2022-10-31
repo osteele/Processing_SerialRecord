@@ -76,7 +76,7 @@ class SerialPortConnection {
     while (serial.available() > 0) {
       String line = serial.readStringUntil('\n');
       if (line != null) {
-        canvasLogger.pRxTime = this.app.millis();
+        canvasLogger.observe(SerialLineEventType.RX_TIME_MSG, this.app.millis());
         line = Utils.trimRight(line);
         while (!line.isEmpty()
             && (line.endsWith("\n") || Character.getNumericValue(line.charAt(line.length() - 1)) == -1)) {
@@ -95,14 +95,14 @@ class SerialPortConnection {
   String read() {
     String line = peek();
     if (line != null) {
-      canvasLogger.pRxLine = line;
+      canvasLogger.observe(SerialLineEventType.RX_LINE_MSG, line);
       unprocessedRxLine = null;
     }
     return line;
   }
 
   void writeln(String line) {
-    canvasLogger.pTxLine = line;
+    canvasLogger.observe(SerialLineEventType.TX_LINE_MSG, line);
     if (logToConsole) {
       PApplet.println("TX: " + line);
     }
@@ -138,3 +138,9 @@ class SerialPortConnection {
     serial.write("!e\n");
   }
 }
+
+enum SerialLineEventType {
+  RX_TIME_MSG,
+  RX_LINE_MSG,
+  TX_LINE_MSG,
+};

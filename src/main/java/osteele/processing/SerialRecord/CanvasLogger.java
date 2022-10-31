@@ -12,14 +12,33 @@ public class CanvasLogger {
   private final float defaultX = 10;
   private final float defaultY = -1;
 
-  String pRxLine;
-  String pTxLine;
-  int pRxTime;
+  private String pRxLine;
+  private String pTxLine;
+  private int pRxTime;
 
   CanvasLogger(PApplet app, SerialPortConnection portConnection) {
     this.app = app;
     this.portConnection = portConnection;
     app.registerMethod("draw", this);
+  }
+
+  void observe(SerialLineEventType type, int timestamp) {
+    assert type == SerialLineEventType.RX_TIME_MSG;
+    pRxTime = timestamp;
+  }
+
+  void observe(SerialLineEventType type, String line) {
+    switch (type) {
+      case RX_TIME_MSG:
+        assert false;
+        break;
+      case RX_LINE_MSG:
+        pRxLine = line;
+        break;
+      case TX_LINE_MSG:
+        pTxLine = line;
+        break;
+    }
   }
 
   void drawTxRx(float x, float y, boolean eraseBackground) {
