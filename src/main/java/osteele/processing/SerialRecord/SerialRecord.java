@@ -106,6 +106,7 @@ public class SerialRecord {
   /**
    * Return the nth value in the array.
    *
+   * @param index The array index to return
    * @return the first value
    */
   public int get(int index) {
@@ -244,6 +245,8 @@ public class SerialRecord {
    * Send the values in the current record to the serial port.
    *
    * This method is a synonym for `send()`.
+   *
+   * @param values An array of values to send.
    */
   public void write(int values[]) {
     send(values);
@@ -299,6 +302,7 @@ public class SerialRecord {
    * serial port and store the values in the current record. A synonym for
    * readIfAvailable().
    *
+   * @param values An array of values to send.
    * @return true if data was available and read.
    */
   public boolean read(int[] values) {

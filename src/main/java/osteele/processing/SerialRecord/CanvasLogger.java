@@ -12,7 +12,7 @@ public class CanvasLogger {
   private final float defaultX = 10;
   private final float defaultY = -1;
 
-  public CanvasLogger(PApplet app, SerialPortConnection portConnection) {
+  CanvasLogger(PApplet app, SerialPortConnection portConnection) {
     this.app = app;
     this.portConnection = portConnection;
     app.registerMethod("draw", this);

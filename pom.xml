@@ -84,6 +84,10 @@
             <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
             <destDir>reference</destDir>
             <source>11</source>
+            <sourceFileExcludes>
+              <exclude>**/CanvasLogger.java</exclude>
+              <exclude>**/PeriodicEchoScheduler.java</exclude>
+            </sourceFileExcludes>
           </configuration>
         </plugin>
         <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
