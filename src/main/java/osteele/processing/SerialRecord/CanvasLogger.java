@@ -15,6 +15,7 @@ public class CanvasLogger {
   private String pRxLine;
   private String pTxLine;
   private int pRxTime;
+  private float pBoxWidth = 0;
 
   CanvasLogger(PApplet app, SerialPortConnection portConnection) {
     this.app = app;
@@ -59,14 +60,16 @@ public class CanvasLogger {
     if (y < 0) {
       y = this.app.height - boxHeight;
     }
-    if (eraseBackground || true) {
-      float w = PApplet.max(
+    if (eraseBackground) {
+      float boxWidth = PApplet.max(
           rxMessage == null ? 0 : app.textWidth(rxMessage),
           txMessage == null ? 0 : app.textWidth(txMessage));
       app.fill(app.g.backgroundColor);
       app.noStroke();
-      app.rect(x, y - app.textAscent(), w, boxHeight);
+      app.rect(x, y - app.textAscent(),
+          PApplet.max(pBoxWidth, boxWidth), boxHeight);
       app.fill(app.brightness(app.g.backgroundColor) < 128 ? 255 : 0);
+      pBoxWidth = boxWidth;
     }
     if (txMessage != null) {
       app.text(txMessage, x, y);
